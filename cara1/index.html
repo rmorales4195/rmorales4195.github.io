@@ -1,3 +1,4 @@
+
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.min.js" integrity="sha512-1YMgn4j8cIL91s14ByDGmHtBU6+F8bWOMcF47S0cRO3QNm8SKPNexy4s3OCim9fABUtO++nJMtcpWbINWjMSzQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -6,23 +7,23 @@
   <body>
     <script>
 let mic;
-     
-    
+
+      
       function setup() {
   createCanvas(windowWidth,windowHeight);
         mic=new p5.AudioIn();// guarda a la variable mic una entrada de audio de p5.js
-        mic.start();// activa el micròfon
+        mic.start();// activa el microfon
 }
 function draw() {
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,400);
-  background(0, 255, 155);
-  fill(217, 190, 150);
+  background("orange");
+  fill(218,255,51)
   ellipse(windowWidth/2,windowHeight/2,300,300);
-  fill(42, 31, 13);
-  ellipse(windowWidth/2-70,windowHeight/2-60,50,50);
-  ellipse(windowWidth/2+70,windowHeight/2-60,50,50);
-  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);
+  fill(1, 1, 1 )
+  ellipse(windowWidth/2-60,windowHeight/2-60,70,70);
+  ellipse(windowWidth/2+60,windowHeight/2-60,70,70);
+  arc(windowWidth/2,windowHeight/2+90,100,90+h,0,PI);
 }
     </script>
 </body>
