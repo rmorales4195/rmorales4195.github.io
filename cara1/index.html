@@ -16,13 +16,13 @@ let mic;
 function draw() {
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,400);
-  background(51, 255, 153 );
-  fill(255, 236, 51)
+  background(0, 255, 155);
+  fill(217, 190, 150);
   ellipse(windowWidth/2,windowHeight/2,300,300);
-  fill(1, 1, 1)
-  ellipse(windowWidth/2-60,windowHeight/2-60,70,70);
-  ellipse(windowWidth/2+60,windowHeight/2-60,70,70);
-  arc(windowWidth/2,windowHeight/2+90,100,60+h,0,PI);
+  fill(42, 31, 13);
+  ellipse(windowWidth/2-70,windowHeight/2-60,50,50);
+  ellipse(windowWidth/2+70,windowHeight/2-60,50,50);
+  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);
 }
     </script>
 </body>
