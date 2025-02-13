@@ -5,10 +5,15 @@
   </head>
   <body>
     <script>
-function setup() {
+let mic=new p5. AudioIm();// guarda a la variable mic una entrada de audio de p5.js
+      
+      function setup() {
   createCanvas(windowWidth,windowHeight);
+        mic.star();// activa el micròfon
 }
 function draw() {
+  let vol=mic. getLevel();
+  let h=map(vol,0,1,0,400)
   background(51, 255, 153 );
   fill(255, 236, 51)
   ellipse(windowWidth/2,windowHeight/2,300,300);
