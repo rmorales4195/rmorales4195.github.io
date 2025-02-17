@@ -6,23 +6,31 @@
   <body>
     <script>
 let mic;
-     
-    
+      let tembla;
+      
       function setup() {
   createCanvas(windowWidth,windowHeight);
         mic=new p5.AudioIn();// guarda a la variable mic una entrada de audio de p5.js
         mic.start();// activa el micròfon
 }
 function draw() {
+  temblar=random(10,50)
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,800);
-  background(0, 255-h, 155);
-  fill(217, 190+h, 150);
-  ellipse(windowWidth/2,windowHeight/2,300,300);
-  fill(42, 31-h, 13+h);
-  ellipse(windowWidth/2-70,windowHeight/2-60,50,50);
-  ellipse(windowWidth/2+70,windowHeight/2-60,50,50);
-  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);
+  background(0, 255-h, 155);//color de fons
+  fill(217, 190+h, 150);//color cara
+  ellipse(windowWidth/2,windowHeight/2,300+temblar,300+temblar);//cara
+  //el primer que hi ha entre parentesis es diu paràmetre i és la posició x del centre de la cara
+  //windowWidth/2 significa que le centre de la cara coindideix amb al centre de la finestra
+  //el segon paràmetre es la posició y o alçada del centre de la cara
+  //windowHeight/2 significa el centre de la cara en alçada i coincideix amb el centre de la cara
+  //el tercer paràmetre és l'amplada de la cara
+  //el quart és l'alçada de la cara
+  //temblar esta sumant a l'amplada i l'alçada de la cara i canviara aleatoriament entre 10 i 50 pixeles
+  fill(42, 31-h, 13+h);//color ulls
+  ellipse(windowWidth/2-70,windowHeight/2-60,50,50);//ull dret
+  ellipse(windowWidth/2+70,windowHeight/2-60,50,50);//ull esquerra
+  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);//boca
 }
     </script>
 </body>
