@@ -28,8 +28,8 @@ function draw() {
   //el quart és l'alçada de la cara
   //temblar esta sumant a l'amplada i l'alçada de la cara i canviara aleatoriament entre 10 i 50 pixeles
   fill(255+h/2, 51, 57);//color ulls
-  ellipse(windowWidth/2-70,windowHeight/2-60,50,50);//ull dret
-  ellipse(windowWidth/2+70,windowHeight/2-60,50,50);//ull esquerra
+  ellipse(windowWidth/2-70+h*5,windowHeight/2-60+h*5,50,50);//ull dret
+  ellipse(windowWidth/2+70+h*5,windowHeight/2-60+h*5,50,50);//ull esquerra
   arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);//boca
 }
       console.log(h);
