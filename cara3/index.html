@@ -7,19 +7,25 @@
     <script>
 let mic;
       let tembla;
-      
+      let sinus;//creem una variable que es diu sinus
       function setup() {
   createCanvas(windowWidth,windowHeight);
         mic=new p5.AudioIn();// guarda a la variable mic una entrada de audio de p5.js
         mic.start();// activa el micròfon
 }
 function draw() {
-  temblar=random(10,50)
+  temblar=random(10,50);
+sinus=sin(frameCount * 0.1);//la variable sinus crea numeros entre -1 i +1
+  //frameCount conta els fotogrames i fa 60 sinus per segons
+  //això vol dir 60 numeros entre -1 i +1 ordenta per segons
+  let movsinus=map(sinus,-1,1,0,50);
+  //converteix els numeros entre -1 i +1 donara numeros proporcionals 
+//entre 0 50
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,800);
   background(0, 255-h, 155);//color de fons
   fill(217, 190+h, 150);//color cara
-  ellipse(windowWidth/2,windowHeight/2,300+temblar,300+temblar);//cara
+  ellipse(windowWidth/2,windowHeight/2,300+sinus+tamblar,300+temblar);//cara
   //el primer que hi ha entre parentesis es diu paràmetre i és la posició x del centre de la cara
   //windowWidth/2 significa que le centre de la cara coindideix amb al centre de la finestra
   //el segon paràmetre es la posició y o alçada del centre de la cara
