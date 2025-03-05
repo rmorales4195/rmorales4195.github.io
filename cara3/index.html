@@ -6,8 +6,9 @@
   <body>
     <script>
 let mic;
-      let tembla;
-      let sinus;//creem una variable que es diu sinus
+      let temblar;
+    let sinus;//creem una variable que es diu sinus
+      let cosinus;
       function setup() {
   createCanvas(windowWidth,windowHeight);
         mic=new p5.AudioIn();// guarda a la variable mic una entrada de audio de p5.js
@@ -15,34 +16,33 @@ let mic;
 }
 function draw() {
   temblar=random(10,50);
-sinus=sin(frameCount * 0.1);//la variable sinus crea numeros entre -1 i +1
-  //frameCount conta els fotogrames i fa 60 sinus per segons
-  //això vol dir 60 numeros entre -1 i +1 ordenta per segons
+ sinus=sin(frameCount * 0.1);//la variable sinus crea numeros entre -1 i +1
+   cosinus=cos(frameCount * 0.1);//la variable sinus crea numeros entre -1 i +1
+  //frameCount esta contant els fotogrames i fa 60 a sinus per segon
+  //això vol dir 60 numeros entre -1 i 1 ordenats per segon
   let movsinus=map(sinus,-1,1,0,50);
-  //converteix els numeros entre -1 i +1 donara numeros proporcionals 
-//entre 0 50
+  let movcosinus=map(cosinus,-1,1,0,50);
+  //converteix els numeros entre -1 i +1 donaran numeros proporcionals
+//entre 0 50 
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,800);
-  background(0, 255-h, 155);//color de fons
-  fill(217, 190+h, 150);//color cara
-  ellipse(windowWidth/2,windowHeight/2,300+sinus*6,300+temblar);//cara
-  //el primer que hi ha entre parentesis es diu paràmetre i és la posició x del centre de la cara
-  //windowWidth/2 significa que le centre de la cara coindideix amb al centre de la finestra
-  //el segon paràmetre es la posició y o alçada del centre de la cara
-  //windowHeight/2 significa el centre de la cara en alçada i coincideix amb el centre de la cara
-  //el tercer paràmetre és l'amplada de la cara
-  //el quart és l'alçada de la cara
-  //temblar esta sumant a l'amplada i l'alçada de la cara i canviara aleatoriament entre 10 i 50 pixeles
-  fill(255+h/2, 51, 57);//color ulls
-  ellipse(windowWidth/2-70+h*5,windowHeight/2-60+h*5,50,50);//ull dret
-  ellipse(windowWidth/2+70+h*5,windowHeight/2-60+h*5,50,50);//ull esquerra
-  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);//boca
-  fill(255+h/2, 255, 255);//color pupil·la
-  ellipse(windowWidth/2-70+h*5,windowHeight/2-60+h*5,20,20);//pupil·la dreta
-  ellipse(windowWidth/2+70+h*5,windowHeight/2-60+h*5,20,20);//pupil·la esquerra
-  fill(0+h/2, 0, 0);//color celles
-  ellipse(windowWidth/2-70+h*5,windowHeight/2-90+h*5,50,20);//cella esquerra 
-  ellipse(windowWidth/2+70+h*5,windowHeight/2-90+h*5,50,20);//cella dreta
+  background(movsinus, 255-movsinus,0);// color de fons
+  fill(6, 13, 35);// color cara
+  ellipse(windowWidth/2,windowHeight/2,300+movsinus,300+movsinus);// cara
+  // windowWidth/2 significa que el centre de la cara coincideix amb el centre de la finestra
+  // windowHeight/2 significa el centre de la cara en alçada i coincideix amb el centre de la cara
+  // el primer que hi ha entre parentesis és diu paramètre y es la posició de X y del centre de la cara
+  // el segon paramètre és la posició Y
+  // el tercer paràmetre es l'amplada de la cara
+  // el quart és l'alçada de la cara
+  // temblar esta sumat a la amplada i alçada de la cara i canviara aleatoriament entre 10-50 pixels
+  fill(181-movcosinus*3, 203+h*2, 199-movsinus*4);// color ulls ull dret
+  ellipse(windowWidth/2-70,windowHeight/2-60-movsinus,50-h,50-h);// ull dret
+  fill(movsinus*5,255-movcosinus*5,100+movsinus*3);
+  ellipse(windowWidth/2+70,windowHeight/2-60-movcosinus,50,50+h);// ull esquerra
+  fill(movsinus*5,180-movsinus*5,127+movsinus*2);
+  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);// boca
+  
 }
       console.log(h);
     </script>
