@@ -44,7 +44,7 @@ function draw() {
   let h=map(vol,0,1,0,800);
   background(255-noise, 0, noise3);// color de fons
   fill(217, 190+h, 150);// color cara
-  ellipse(windowWidth/2,windowHeight/2,300+noise1,300+noise1);// cara
+  ellipse(mouseX/2,mouseY/2,300+noise1,300+noise1);// cara
   // windowWidth/2 significa que el centre de la cara coincideix amb el centre de la finestra
   // windowHeight/2 significa el centre de la cara en alçada i coincideix amb el centre de la cara
   // el primer que hi ha entre parentesis és diu paramètre y es la posició de X y del centre de la cara
@@ -53,11 +53,11 @@ function draw() {
   // el quart és l'alçada de la cara
   // temblar esta sumat a la amplada i alçada de la cara i canviara aleatoriament entre 10-50 pixels
   fill(181-movcosinus*3, 203+h*2, 199-movsinus*4);// color ulls ull dret
-  ellipse(windowWidth/2-70,windowHeight/2-60-movsinus,50-h,50-h*noise2);// ull dret
+  ellipse(mouseX/2-70,mouseY/2-60-movsinus,50-h,50-h*noise2);// ull dret
   fill(movsinus*5,255-movcosinus*5,100+movsinus*3);
-  ellipse(windowWidth/2+70,windowHeight/2-60-movcosinus,50,50+h*noise2);// ull esquerra
+  ellipse(mouseX/2+70,mouseY/2-60-movcosinus,50,50+h*noise2);// ull esquerra
   fill(movsinus*5,180-movsinus*5,127+movsinus*2);
-  arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);// boca
+  arc(mouseX/2,mouseY/2+90,100,50+h,0,PI);// boca
   
 }
   
