@@ -42,7 +42,7 @@ function draw() {
 //entre 0 50 
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,800);
-  background(255-noise, 0, noise2);// color de fons
+  background(187-noise, 90, noise2);// color de fons
   fill(217, 190+h, 150);// color cara
   ellipse(mouseX/2,mouseY/2,300+noise1,300+noise1);// cara
   // windowWidth/2 significa que el centre de la cara coincideix amb el centre de la finestra
