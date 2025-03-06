@@ -5,7 +5,9 @@
   </head>
   <body>
     <script>
-let mic;
+ let t = 0;
+      // Declara i inicialitza la variable 't', que servirà per crear un moviment suau amb 'noise()'.
+      let mic;
       let temblar;
     let sinus;//creem una variable que es diu sinus
       let cosinus;
@@ -15,6 +17,20 @@ let mic;
         mic.start();// activa el micròfon
 }
 function draw() {
+  
+        t += 0.01;
+        // Incrementa la variable 't' per fer que el 'noise()' canviï progressivament.
+
+        let centerX = width / 2 + noise(t) * 100 - 50;
+        // Calcula la posició X del centre de la cara.
+        // width / 2: Posa el centre a la meitat de l'amplada del canvas.
+        // noise(t): Funció 'noise' genera valors suaus entre 0 i 1, donant moviment orgànic.
+        // * 100: Amplifica el moviment.
+        // - 50: Centra el moviment al voltant de la posició original.
+
+        let centerY = height / 2 + noise(t + 100) * 100 - 50;
+        // Calcula la posició Y del centre de la cara amb el mateix patró.
+        // noise(t + 100): Utilitza un desplaçament (+100) perquè X i Y siguin independents.
   temblar=random(10,50);
  sinus=sin(frameCount * 0.1);//la variable sinus crea numeros entre -1 i +1
    cosinus=cos(frameCount * 0.1);//la variable sinus crea numeros entre -1 i +1
