@@ -7,7 +7,11 @@
     <script>
  let t = 0;
       // Declara i inicialitza la variable 't', que servirà per crear un moviment suau amb 'noise()'.
-      let mic;
+let mic;
+      let smile=false;
+      //hem creat una variable de tipus booleana, que pot tenir dos valors
+      //true o false, que vol dir veritat o fals
+      //he posat false perque no executi al començar quan s'obra la pagina
       let temblar;
     let sinus;//creem una variable que es diu sinus
       let cosinus;
@@ -57,11 +61,19 @@ function draw() {
   fill(movsinus*5,255-movcosinus*5,100+movsinus*3);
   ellipse(mouseX/2+70,mouseY/2-60-movcosinus,50,50+h*noise2);// ull esquerra
   fill(movsinus*5,180-movsinus*5,127+movsinus*2);
+  if(smile){
   arc(mouseX/2,mouseY/2+90,100,50+h,0,PI);// boca
-  
+  }else{
+    arc(windowWidth/2,windowHeight/2+90,100,50+h,PI,0);// boca cap avall
+  }
 }
-  
-    </script>
+       function keyPresed(){
+         //aquesta funció fa que quan premo la S o s
+         //la funció smile cambia perque smile es igual a no smile
+         if(key==='S'||key==='S')
+         {
+           smile=!smile;}
+          </script>
 </body>
 </html>
 
