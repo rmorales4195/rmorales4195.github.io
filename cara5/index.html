@@ -21,8 +21,7 @@ let mic;
         mic.start();// activa el micròfon
 }
 function draw() {
-  
-        t += 0.01;
+    t += 0.01;
         // Incrementa la variable 't' per fer que el 'noise()' canviï progressivament.
 
         let noise1 = noise(t) * 100;
@@ -70,6 +69,10 @@ function draw() {
        function keyPresed(){
          //aquesta funció fa que quan premo la S o s
          //la funció smile cambia perque smile es igual a no smile
+         //if significa si es comleix
+         //|| significa O
+         //! significa NO i per tant el smile que era false 
+         //es transforma en true
          if(key==='S'||key==='S')
          {
            smile=!smile;}
