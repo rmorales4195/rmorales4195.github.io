@@ -43,6 +43,7 @@ function draw() {
   //converteix els numeros entre -1 i +1 donaran numeros proporcionals
 //entre 0 50 
   let vol=mic.getLevel();
+   bgColor = color(200, 220, 255); // Color de fons inicial (un blau clar).
   let h=map(vol,0,1,0,800);
   background(bgcolor);// color de fons
   fill(217, 190+h, 150);// color cara
