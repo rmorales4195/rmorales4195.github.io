@@ -4,15 +4,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/addons/p5.sound.min.js" integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DlMuxDChC7x0oXtk/ESji6a0lP/Tdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </head>
   <body>
-      <button onclick="changeBackground();">Canvia Fons</button>
+     <button onclick="changeBackground();">Canvia Fons</button>
     <script>
  let t = 0;
       // Declara i inicialitza la variable 't', que servirà per crear un moviment suau amb 'noise()'.
-let mic;
-      let smile=false;
-      //hem creat una variable de tipus booleana, que pot tenir dos valors
-      //true o false, que vol dir veritat o fals
-      //he posat false perque no executi al començar quan s'obra la pagina
+      let mic;
+      let bgColor; 
       let temblar;
     let sinus;//creem una variable que es diu sinus
       let cosinus;
@@ -22,7 +19,8 @@ let mic;
         mic.start();// activa el micròfon
 }
 function draw() {
-    t += 0.01;
+  
+        t += 0.01;
         // Incrementa la variable 't' per fer que el 'noise()' canviï progressivament.
 
         let noise1 = noise(t) * 100;
@@ -61,28 +59,16 @@ function draw() {
   fill(movsinus*5,255-movcosinus*5,100+movsinus*3);
   ellipse(mouseX/2+70,mouseY/2-60-movcosinus,50,50+h*noise2);// ull esquerra
   fill(movsinus*5,180-movsinus*5,127+movsinus*2);
-  if(smile){
   arc(mouseX/2,mouseY/2+90,100,50+h,0,PI);// boca
-  }else{
-  arc(mouseX/2,mouseY/2+90,100,50+h,PI,0);// boca cap avall
-  }
-  /* Funció per canviar el color de fons:
+     /* Funció per canviar el color de fons:
        Utilitza random() per generar components RGB aleatoris dins d'un interval.
        Aquesta funció es crida en prémer el botó "Canvia Fons". */
     function changeBackground() {
       bgColor = color(random(100, 255), random(100, 255), random(100, 255));
+    } 
 }
-       function keyPresed(){
-         //aquesta funció fa que quan premo la S o s
-         //la funció smile cambia perque smile es igual a no smile
-         //if significa si es comleix
-         //|| significa O
-         //! significa NO i per tant el smile que era false 
-         //es transforma en true
-         if(key==='S'||key==='s')
-         {
-           smile=!smile;}
-       }
+  
+    </script>
 </body>
 </html>
 
