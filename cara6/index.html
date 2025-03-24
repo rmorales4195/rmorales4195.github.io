@@ -4,6 +4,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/addons/p5.sound.min.js" integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DlMuxDChC7x0oXtk/ESji6a0lP/Tdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </head>
   <body>
+      <button onclick="changeBackground();">Canvia Fons</button>
     <script>
  let t = 0;
       // Declara i inicialitza la variable 't', que servirà per crear un moviment suau amb 'noise()'.
@@ -45,7 +46,7 @@ function draw() {
 //entre 0 50 
   let vol=mic.getLevel();
   let h=map(vol,0,1,0,800);
-  background(187-noise, 90, noise2);// color de fons
+  background(bgcolor);// color de fons
   fill(217, 190+h, 150);// color cara
   ellipse(mouseX/2,mouseY/2,300+noise1,300+noise1);// cara
   // windowWidth/2 significa que el centre de la cara coincideix amb el centre de la finestra
@@ -65,6 +66,11 @@ function draw() {
   }else{
   arc(mouseX/2,mouseY/2+90,100,50+h,PI,0);// boca cap avall
   }
+  /* Funció per canviar el color de fons:
+       Utilitza random() per generar components RGB aleatoris dins d'un interval.
+       Aquesta funció es crida en prémer el botó "Canvia Fons". */
+    function changeBackground() {
+      bgColor = color(random(100, 255), random(100, 255), random(100, 255));
 }
        function keyPresed(){
          //aquesta funció fa que quan premo la S o s
