@@ -56,6 +56,9 @@ function draw() {
   ellipse(mouseX/2-70,mouseY/2-60-movsinus,50-h,50-h*noise2);// ull dret
   fill(movsinus*5,255-movcosinus*5,100+movsinus*3);
   ellipse(mouseX/2+70,mouseY/2-60-movcosinus,50,50+h*noise2);// ull esquerra
+   fill(0 + temblar * h / 2, 0, 0); // Color de les pupil·les
+  ellipse(mouseX - 70 + h * 3, mouseY - 60 + h * 3, 30, 30); // Pupil·la esquerra
+  ellipse(mouseX + 70 + h * 3, mouseY - 60 + h * 3, 30, 30); // Pupil·la dreta
   fill(movsinus*5,180-movsinus*5,127+movsinus*2);
   arc(mouseX/2,mouseY/2+90,100,50+h,0,PI);// boca
   
