@@ -61,8 +61,10 @@ function draw() {
   ellipse(mouseX + 70 + h * 3, mouseY - 60 + h * 3, 30, 30); // Pupil·la dreta
   fill(movsinus*5,180-movsinus*5,127+movsinus*2);
   arc(windowWidth/2,windowHeight/2+90,100,50+h,0,PI);// boca
-  line(windowWidth/2-100,windowHeight/2-130,windowWidth/2-10,windowHeight/2-110);
-  arc(windowWidth/2+100,windowHeight/2-130,80,30+h,PI,0)
+  strokewWeigh(5);
+  noFill();
+  line(windowWidth/2-100,windowHeight/2-100,windowWidth/2-10,windowHeight/2-110);
+  arc(windowWidth/2+80,windowHeight/2-100,80,30+h,PI,0)
 }
   
     </script>
