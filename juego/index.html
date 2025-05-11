@@ -17,14 +17,17 @@
 
     #diagram {
       width: 100%;
+      border: 1px solid #ccc;
     }
 
     .dropzone {
       position: absolute;
-      width: 100px;
+      width: 120px;
       height: 20px;
       border: 2px dashed #aaa;
       background-color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+      font-size: 12px;
     }
 
     .label {
@@ -39,6 +42,9 @@
 
     #labels {
       margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
   </style>
 </head>
@@ -47,20 +53,21 @@
   <p>Arrossega cada etiqueta a la part correcta del diagrama.</p>
 
   <div id="game-container">
-    <img id="diagram" src="1000008514.jpg" alt="Aparell masculí intern">
+    <!-- Ruta directa a la imagen (debe estar en la misma carpeta) -->
+    <img id="diagram" src="./1000008514.jpg" alt="Aparell masculí intern">
 
-    <!-- Dropzones (posiciones aproximadas, ajustables) -->
-    <div class="dropzone" style="top: 70px; left: 250px;" data-label="vesicula seminal"></div>
-    <div class="dropzone" style="top: 120px; left: 260px;" data-label="pròstata"></div>
-    <div class="dropzone" style="top: 150px; left: 230px;" data-label="glandula de cooper"></div>
-    <div class="dropzone" style="top: 170px; left: 290px;" data-label="uretra"></div>
-    <div class="dropzone" style="top: 220px; left: 240px;" data-label="penis"></div>
-    <div class="dropzone" style="top: 260px; left: 210px;" data-label="gland"></div>
-    <div class="dropzone" style="top: 300px; left: 190px;" data-label="prepuci"></div>
-    <div class="dropzone" style="top: 260px; left: 90px;" data-label="testicle"></div>
-    <div class="dropzone" style="top: 300px; left: 80px;" data-label="escrot"></div>
-    <div class="dropzone" style="top: 200px; left: 90px;" data-label="epididim"></div>
-    <div class="dropzone" style="top: 110px; left: 90px;" data-label="conducte deferent"></div>
+    <!-- Dropzones amb ubicacions aproximades -->
+    <div class="dropzone" style="top: 40px; left: 250px;" data-label="vesicula seminal"></div>
+    <div class="dropzone" style="top: 90px; left: 270px;" data-label="pròstata"></div>
+    <div class="dropzone" style="top: 130px; left: 230px;" data-label="glandula de cooper"></div>
+    <div class="dropzone" style="top: 150px; left: 300px;" data-label="uretra"></div>
+    <div class="dropzone" style="top: 200px; left: 260px;" data-label="penis"></div>
+    <div class="dropzone" style="top: 260px; left: 250px;" data-label="gland"></div>
+    <div class="dropzone" style="top: 290px; left: 240px;" data-label="prepuci"></div>
+    <div class="dropzone" style="top: 250px; left: 90px;" data-label="testicle"></div>
+    <div class="dropzone" style="top: 290px; left: 90px;" data-label="escrot"></div>
+    <div class="dropzone" style="top: 210px; left: 90px;" data-label="epididim"></div>
+    <div class="dropzone" style="top: 80px; left: 90px;" data-label="conducte deferent"></div>
   </div>
 
   <div id="labels">
