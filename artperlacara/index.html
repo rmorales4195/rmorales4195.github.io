@@ -153,14 +153,13 @@
       switch (dominant) {
         case 'happy':
           stroke(255,200,0); // groc
-          beginShape();
-          for (let a = 0; a < TWO_PI; a += PI/8) {
-            let r = 100 + 25 * sin(a * 8);
-            let x = VIRTUAL_W/2 + r * cos(a);
-            let y = VIRTUAL_H/2 + r * sin(a);
-            vertex(x, y); // vèrtex positiu
-          }
-          endShape(CLOSE);
+         beginShape();//ojo izquierdo
+vertex(118, 575.1875);
+vertex(206, 574.1875);
+vertex(206, 478.1875);
+vertex(112, 478.1875);
+vertex(117, 576.1875);
+endShape(CLOSE);
           break;
 
         case 'sad':
