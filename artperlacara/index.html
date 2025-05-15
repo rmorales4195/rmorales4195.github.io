@@ -152,18 +152,27 @@
       switch (dominant) {
         case 'happy':
           stroke(255,200,0); // groc
-         beginShape();//ojo izquierdo
+         fill(239, 0, 188);//color rosa perque es content
+          beginShape();//ojo izquierdo
 vertex(112, 574.1875);
 vertex(206, 574.1875);
 vertex(206, 478.1875);
 vertex(112, 478.1875);
 vertex(112, 574.1875);
 endShape(CLOSE);
+          beginShape();
+vertex(303, 385.1875);
+vertex(395, 385.1875);
+vertex(395, 286.1875);
+vertex(303, 286.1875);
+vertex(303, 385.1875);
+endShape(CLOSE);
           break;
 
-        case 'sad':
+        case 'sad'://ojo dercho
           stroke(50,100,200,150); // blau
-         beginShape();
+        
+          beginShape();
 vertex(303, 385.1875);
 vertex(395, 385.1875);
 vertex(395, 286.1875);
