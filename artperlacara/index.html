@@ -152,7 +152,7 @@
       switch (dominant) {
         case 'happy':
           stroke(255,200,0); // groc
-         fill(239, 0, 188);//color rosa perque es content
+         fill(255, 0, 236 * intensity );//color rosa perque es content
           beginShape();//ojo izquierdo
 beginShape();
 vertex(272, 384.1875);
@@ -250,14 +250,26 @@ endShape();
 
         case 'angry':
           stroke(200,0,0,150); // vermell
+         beginShape();
+vertex(272, 384.1875);
+vertex(149, 384.1875);
+vertex(149, 508.1875);
+vertex(272, 508.1875);
+vertex(272, 384.1875);
+endShape(CLOSE);
           beginShape();
-          for (let i = 0; i < 16; i++) {
-            let angle = map(i, 0, 16, 0, TWO_PI);
-            let r = i % 2 ? 100 : 175;
-            let x = VIRTUAL_W/2 + r * cos(angle);
-            let y = VIRTUAL_H/2 + r * sin(angle);
-            vertex(x, y);
-          }
+vertex(528, 384.1875);
+vertex(653, 384.1875);
+vertex(653, 508.1875);
+vertex(528, 508.1875);
+vertex(528, 384.1875);
+beginShape();
+vertex(220, 360.1875);
+vertex(236, 360.1875);
+vertex(196, 305.1875);
+vertex(179, 317.1875);
+vertex(220, 360.1875);
+endShape();
           endShape(CLOSE);
           break;
 
