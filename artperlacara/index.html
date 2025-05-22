@@ -250,37 +250,49 @@ endShape();
           break;
 
 case 'angry':
-  stroke(200, 0, 0, 150); // rojo translúcido
-  fill(255, 0, 0); // rojo fuerte para la cara
+  stroke(200, 0, 0, 150); // rojo translúcido para el borde
+  fill(255, 0, 0); // rojo fuerte para la cabeza
+
   // Cabeza cuadrada
   beginShape();
-  vertex(149, 384);
-  vertex(653, 384);
-  vertex(653, 508);
-  vertex(149, 508);
-  vertex(149, 384);
+  vertex(200, 300);
+  vertex(600, 300);
+  vertex(600, 700);
+  vertex(200, 700);
+  vertex(200, 300);
   endShape(CLOSE);
 
-  // Ojos (dos cuadrados pequeños)
-  fill(0); // negro para los ojos
-  rect(220, 420, 50, 50); // ojo izquierdo
-  rect(480, 420, 50, 50); // ojo derecho
+  // Ojos separados (cuadrados)
+  fill(0); // negro
+  noStroke();
+  rect(250, 400, 60, 60); // ojo izquierdo
+  rect(490, 400, 60, 60); // ojo derecho
 
-  // Cejas inclinadas para expresar enojo
-  strokeWeight(5);
+  // Cejas inclinadas (cuadradas también)
   stroke(80, 0, 0); // marrón oscuro
-  line(210, 410, 250, 400); // ceja izquierda (inclinada hacia abajo)
-  line(470, 400, 510, 410); // ceja derecha (inclinada hacia arriba)
-
-  // Boca fruncida (línea curva hacia abajo)
+  strokeWeight(10);
   noFill();
-  stroke(0);
-  strokeWeight(4);
+  // ceja izquierda: inclinada hacia abajo
   beginShape();
-  vertex(300, 560);
-  bezierVertex(370, 540, 430, 540, 500, 560); // curva hacia abajo
+  vertex(240, 390);
+  vertex(310, 370);
+  endShape();
+  // ceja derecha: inclinada hacia arriba
+  beginShape();
+  vertex(480, 370);
+  vertex(550, 390);
+  endShape();
+
+  // Boca fruncida
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  beginShape();
+  vertex(320, 620);
+  bezierVertex(380, 600, 420, 600, 480, 620); // curva hacia abajo
   endShape();
   break;
+
         case 'fearful':
           stroke(100,100,100,150); // gris
           beginShape();
