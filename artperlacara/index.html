@@ -265,22 +265,22 @@ case 'angry':
   // Ojos separados (cuadrados)
   fill(0); // negro
   noStroke();
-  rect(250, 400, 60, 60); // ojo izquierdo
-  rect(490, 400, 60, 60); // ojo derecho
+  rect(250, 420, 60, 60); // ojo izquierdo
+  rect(490, 420, 60, 60); // ojo derecho
 
-  // Cejas inclinadas (cuadradas también)
+  // Cejas en forma de "V" invertida (enojo)
   stroke(80, 0, 0); // marrón oscuro
   strokeWeight(10);
   noFill();
-  // ceja izquierda: inclinada hacia abajo
+  // ceja izquierda: baja hacia el centro
   beginShape();
-  vertex(240, 390);
-  vertex(310, 370);
+  vertex(260, 390); // parte exterior más alta
+  vertex(310, 375); // parte interior más baja
   endShape();
-  // ceja derecha: inclinada hacia arriba
+  // ceja derecha: baja hacia el centro
   beginShape();
-  vertex(480, 370);
-  vertex(550, 390);
+  vertex(540, 375); // parte interior más baja
+  vertex(490, 390); // parte exterior más alta
   endShape();
 
   // Boca fruncida
@@ -292,6 +292,7 @@ case 'angry':
   bezierVertex(380, 600, 420, 600, 480, 620); // curva hacia abajo
   endShape();
   break;
+
 
         case 'fearful':
           stroke(100,100,100,150); // gris
