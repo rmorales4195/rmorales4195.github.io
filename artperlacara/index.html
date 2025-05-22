@@ -249,31 +249,38 @@ vertex(194, 527.1875);
 endShape();
           break;
 
-        case 'angry':
-          stroke(200,0,0,150); // vermell
-         beginShape();
-vertex(272, 384.1875);
-vertex(149, 384.1875);
-vertex(149, 508.1875);
-vertex(272, 508.1875);
-vertex(272, 384.1875);
-endShape(CLOSE);
-          beginShape();
-vertex(528, 384.1875);
-vertex(653, 384.1875);
-vertex(653, 508.1875);
-vertex(528, 508.1875);
-vertex(528, 384.1875);
-beginShape();
-vertex(220, 360.1875);
-vertex(236, 360.1875);
-vertex(196, 305.1875);
-vertex(179, 317.1875);
-vertex(220, 360.1875);
-endShape();
-          endShape(CLOSE);
-          break;
+case 'angry':
+  stroke(200, 0, 0, 150); // rojo translúcido
+  fill(255, 0, 0); // rojo fuerte para la cara
+  // Cabeza cuadrada
+  beginShape();
+  vertex(149, 384);
+  vertex(653, 384);
+  vertex(653, 508);
+  vertex(149, 508);
+  vertex(149, 384);
+  endShape(CLOSE);
 
+  // Ojos (dos cuadrados pequeños)
+  fill(0); // negro para los ojos
+  rect(220, 420, 50, 50); // ojo izquierdo
+  rect(480, 420, 50, 50); // ojo derecho
+
+  // Cejas inclinadas para expresar enojo
+  strokeWeight(5);
+  stroke(80, 0, 0); // marrón oscuro
+  line(210, 410, 250, 400); // ceja izquierda (inclinada hacia abajo)
+  line(470, 400, 510, 410); // ceja derecha (inclinada hacia arriba)
+
+  // Boca fruncida (línea curva hacia abajo)
+  noFill();
+  stroke(0);
+  strokeWeight(4);
+  beginShape();
+  vertex(300, 560);
+  bezierVertex(370, 540, 430, 540, 500, 560); // curva hacia abajo
+  endShape();
+  break;
         case 'fearful':
           stroke(100,100,100,150); // gris
           beginShape();
