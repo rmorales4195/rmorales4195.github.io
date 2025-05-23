@@ -38,7 +38,18 @@ function draw() {
   ellipse(windowWidth/2-70+h*5,windowHeight/2-100+h*5,50,20);//cella esquerra 
   ellipse(windowWidth/2+70+h*5,windowHeight/2-100+h*5,50,20);//cella dreta
 }
-      console.log(h);
+   // Dibuixa una corbata
+fill(255, 0, 0); // color vermell per la corbata
+// Nus de la corbata
+triangle(windowWidth/2 - 20, windowHeight/2 + 150,
+         windowWidth/2 + 20, windowHeight/2 + 150,
+         windowWidth/2, windowHeight/2 + 190);
+// Cos de la corbata
+quad(windowWidth/2 - 30, windowHeight/2 + 190,
+     windowWidth/2 + 30, windowHeight/2 + 190,
+     windowWidth/2 + 15, windowHeight/2 + 300,
+     windowWidth/2 - 15, windowHeight/2 + 300);
+   console.log(h);
     </script>
 </body>
 </html>
