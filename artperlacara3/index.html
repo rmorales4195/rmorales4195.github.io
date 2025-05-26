@@ -383,47 +383,127 @@ endShape();
 
 
           case 'sad':
-            // Cas per a l'emoció "sad" (trist)
-            stroke(70, 130, 230);
-            // Contorn amb un to blau moderat (RGB: 70, 130, 230)
-            fill(100, 180, 255, 100 * smoothIntensity);
-            // Omple la figura amb un blau més clar i transparència segons la intensitat
-            beginShape();
-            vertex(centerX - baseSize, centerY);
-            // Defineix el primer punt a l'esquerra del centre
-            bezierVertex(
-              centerX - baseSize / 2, centerY + baseSize * 1.5,
-              centerX + baseSize / 2, centerY + baseSize * 1.5,
-              centerX + baseSize, centerY
-            );
-            // Dibuixa una corba de Bézier per formar la part inferior de la figura
-            bezierVertex(
-              centerX + baseSize / 2, centerY - baseSize * 0.3,
-              centerX - baseSize / 2, centerY - baseSize * 0.3,
-              centerX - baseSize, centerY
-            );
-            // Dibuixa la corba superior per tancar la figura
-            endShape(CLOSE);
+                case 'sad'://ojo dercho
+          stroke(50,100,200,150); // blau
+        fill(0, 206, 239);
+       beginShape();
+vertex(272, 384.1875);
+vertex(149, 384.1875);
+vertex(149, 508.1875);
+vertex(272, 508.1875);
+vertex(272, 384.1875);
+endShape();
+endShape(CLOSE);
+          beginShape();
+vertex(528, 384.1875);
+vertex(653, 384.1875);
+vertex(653, 508.1875);
+vertex(528, 508.1875);
+vertex(528, 384.1875);
+endShape();
+          fill(0, 18, 239 );
+          beginShape();
+vertex(247, 587.1875);
+vertex(251, 590.1875);
+vertex(258, 596.1875);
+vertex(262, 604.1875);
+vertex(260, 612.1875);
+vertex(250, 611.1875);
+vertex(243, 608.1875);
+vertex(239, 601.1875);
+vertex(234, 593.1875);
+vertex(232, 584.1875);
+vertex(234, 582.1875);
+vertex(238, 582.1875);
+vertex(241, 584.1875);
+endShape();
+          beginShape();
+beginShape();
+vertex(227, 538.1875);
+vertex(220, 541.1875);
+vertex(218, 546.1875);
+vertex(218, 546.1875);
+vertex(218, 553.1875);
+vertex(218, 559.1875);
+vertex(222, 566.1875);
+vertex(229, 567.1875);
+vertex(234, 563.1875);
+vertex(237, 556.1875);
+vertex(235, 548.1875);
+vertex(230, 538.1875);
+vertex(226, 531.1875);
+vertex(220, 535.1875);
+endShape();
+        beginShape();
+vertex(204, 567.1875);
+vertex(200, 575.1875);
+vertex(198, 581.1875);
+vertex(198, 591.1875);
+vertex(203, 596.1875);
+vertex(211, 596.1875);
+vertex(218, 587.1875);
+vertex(215, 581.1875);
+vertex(209, 569.1875);
+vertex(206, 565.1875);
+endShape();
+          beginShape();
+vertex(193, 529.1875);
+vertex(192, 534.1875);
+vertex(191, 538.1875);
+vertex(190, 541.1875);
+vertex(191, 544.1875);
+vertex(195, 545.1875);
+vertex(198, 543.1875);
+vertex(198, 538.1875);
+vertex(197, 533.1875);
+vertex(194, 527.1875);
+endShape();
+          
             break;
 
           case 'angry':
-            // Cas per a l'emoció "angry" (enfadat)
-            stroke(200, 50, 50);
-            // Defineix el contorn en vermell intens (RGB: 200, 50, 50)
-            fill(255, 100, 100, 200 * smoothIntensity);
-            // Omple la forma amb un vermell més suau, amb transparència dependenta de la intensitat
-            beginShape();
-            for (let i = 0; i < 6; i++) {
-              // Bucle per generar 6 vertex de la figura (forma irregular)
-              const angle = map(i, 0, 6, 0, TWO_PI);
-              // Converteix l'índex "i" en un angle distribuint 6 punts de manera uniforme al voltant del cercle
-              const radius = baseSize * (0.7 + noise(t + i) * 0.3);
-              // Calcula el radi amb noise() per afegir variacions aleatòries a la forma
-              vertex(centerX + cos(angle) * radius, centerY + sin(angle) * radius);
-              // Defineix cada vertex a partir de coordenades polars convertides a cartesianes
-            }
-            endShape(CLOSE);
-            break;
+              stroke(200, 0, 0, 150); // rojo translúcido para el borde
+  fill(255, 0, 0); // rojo fuerte para la cabeza
+
+  // Cabeza cuadrada
+  beginShape();
+  vertex(200, 300);
+  vertex(600, 300);
+  vertex(600, 700);
+  vertex(200, 700);
+  vertex(200, 300);
+  endShape(CLOSE);
+
+  // Ojos separados (cuadrados)
+  fill(0); // negro
+  noStroke();
+  rect(250, 420, 60, 60); // ojo izquierdo
+  rect(490, 420, 60, 60); // ojo derecho
+
+  // Cejas en forma de "V" invertida (enojo)
+  stroke(80, 0, 0); // marrón oscuro
+  strokeWeight(10);
+  noFill();
+  // ceja izquierda: baja hacia el centro
+  beginShape();
+  vertex(260, 390); // parte exterior más alta
+  vertex(310, 375); // parte interior más baja
+  endShape();
+  // ceja derecha: baja hacia el centro
+  beginShape();
+  vertex(540, 375); // parte interior más baja
+  vertex(490, 390); // parte exterior más alta
+  endShape();
+
+  // Boca fruncida
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  beginShape();
+  vertex(320, 620);
+  bezierVertex(380, 600, 420, 600, 480, 620); // curva hacia abajo
+  endShape();
+  break;
 
           case 'surprised':
             // Cas per a l'emoció "surprised" (sorprès)
