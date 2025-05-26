@@ -343,7 +343,7 @@
       //--------------------------------------------------
       function drawArt() {
         // Aquesta funció dibuixa formes artístiques basades en l'expressió facial detectada.
-        const { dominant } = currentExpression;
+        const { dominant, intensity } = currentExpression;
         // Extreu la clau "dominant" de l'objecte currentExpression (indicant l'emoció més forta).
         const t = frameCount * 0.05;
         // "t" és una variable que canvia amb el temps per animar els moviments, depenent del nombre de frames.
