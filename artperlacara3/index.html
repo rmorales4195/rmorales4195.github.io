@@ -326,17 +326,20 @@
 function draw() {
   background(255);
 
-  const scaleFactor = min(width, height) / 800; // escala basada en el tamaño original de tus caras
-  push();
-  translate(width / 2, height / 2); // mueve al centro de la pantalla
-  scale(scaleFactor * 1.2); // 20% más grande
-             // aplica el zoom proporcional
-  translate(-400, -500);           // traslada la figura al centro de coordenadas
+  //  Esta línea define scaleFactor localmente, para evitar el error
+  const scaleFactor = min(width, height) / 800;
 
-  drawFace(); // tu función de dibujo que usa coordenadas alrededor de 400,500
+  push();
+  translate(width / 2, height / 2); // mover al centro
+  scale(scaleFactor * 1.2);         // escalar y agrandar
+  translate(-400, -500);            // ajusta el dibujo para que esté centrado
+
+  drawFace(); // Llama a tu función que contiene el switch (angry, happy, etc.)
 
   pop();
 }
+
+
 
         // Calcula un factor d'escala per adaptar els dibuixos a la mida de la finestra.
         scale(scaleFactor);
