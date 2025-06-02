@@ -323,7 +323,16 @@
         // Guarda l'estat actual del context gràfic.
         translate(width / 2, height / 2);
         // Trasllada el sistema de coordenades perquè (0,0) sigui el centre de la finestra.
-        const scaleFactor = min(width, height) / 1800;
+const scaleFactor = min(width, height) / 1800;
+
+push();
+translate(width / 2, height / 2); // mueve el origen al centro
+scale(scaleFactor);              // escala proporcionalmente
+translate(-400, -500);           // ajusta para centrar la figura (basado en tu figura centrada en 400,500)
+
+// Aquí va tu código del "case": dibujos de cara, ojos, boca, etc.
+
+pop();
         // Calcula un factor d'escala per adaptar els dibuixos a la mida de la finestra.
         scale(scaleFactor);
         // Aplica l'escala calculada.
