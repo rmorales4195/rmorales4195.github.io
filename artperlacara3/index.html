@@ -361,109 +361,91 @@
         switch (dominant) {
 
           case 'happy':
-          stroke(255,200,0); // groc
-         fill(255*intensity, intensity*0, 236*intensity );//color rosa perque es content
-          beginShape();//ojo izquierdo
-beginShape();
-vertex(272, 384.1875);
-vertex(149, 384.1875);
-vertex(149, 508.1875);
-vertex(272, 508.1875);
-vertex(272, 384.1875);
-endShape();
-endShape(CLOSE);
-          beginShape();
-vertex(528, 384.1875);
-vertex(653, 384.1875);
-vertex(653, 508.1875);
-vertex(528, 508.1875);
-vertex(528, 384.1875);
-endShape();
-          break;
+  stroke(0, 200, 0, 150); // verde translúcido para el borde
+  fill(intensity * 180, intensity * 255, intensity * 180); // verde claro para la cabeza
+
+  // Cabeza redonda
+  ellipse(400, 500, 400, 400); // centro en (400,500), ancho y alto de 400
+
+  // Ojos en forma de arcos sonrientes
+  noFill();
+  stroke(0);
+  strokeWeight(5);
+  arc(320, 470, 50, 30, 0, PI); // ojo izquierdo (arco hacia arriba)
+  arc(480, 470, 50, 30, 0, PI); // ojo derecho
+
+  // Cejas relajadas (curvas suaves hacia arriba)
+  stroke(80, 50, 0); // marrón
+  strokeWeight(6);
+  noFill();
+  arc(320, 430, 70, 30, PI, TWO_PI); // ceja izquierda
+  arc(480, 430, 70, 30, PI, TWO_PI); // ceja derecha
+
+  // Boca sonriente (curva hacia arriba)
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  beginShape();
+  vertex(320, 600);
+  bezierVertex(380, 640, 420, 640, 480, 600); // curva hacia arriba
+  endShape();
+  break;
+
 
 
        
-                case 'sad'://ojo dercho
-          stroke(50,100,200,150); // blau
-        fill(0, 206, 239);
-       beginShape();
-vertex(272, 384.1875);
-vertex(149, 384.1875);
-vertex(149, 508.1875);
-vertex(272, 508.1875);
-vertex(272, 384.1875);
-endShape();
-endShape(CLOSE);
-          beginShape();
-vertex(528, 384.1875);
-vertex(653, 384.1875);
-vertex(653, 508.1875);
-vertex(528, 508.1875);
-vertex(528, 384.1875);
-endShape();
-          fill(0, 18, 239 );
-          beginShape();
-vertex(247, 587.1875);
-vertex(251, 590.1875);
-vertex(258, 596.1875);
-vertex(262, 604.1875);
-vertex(260, 612.1875);
-vertex(250, 611.1875);
-vertex(243, 608.1875);
-vertex(239, 601.1875);
-vertex(234, 593.1875);
-vertex(232, 584.1875);
-vertex(234, 582.1875);
-vertex(238, 582.1875);
-vertex(241, 584.1875);
-endShape(CLOSE);
-   
-beginShape();
-vertex(227, 538.1875);
-vertex(220, 541.1875);
-vertex(218, 546.1875);
-vertex(218, 546.1875);
-vertex(218, 553.1875);
-vertex(218, 559.1875);
-vertex(222, 566.1875);
-vertex(229, 567.1875);
-vertex(234, 563.1875);
-vertex(237, 556.1875);
-vertex(235, 548.1875);
-vertex(230, 538.1875);
-vertex(226, 531.1875);
-vertex(220, 535.1875);
-endShape();
-        beginShape();
-vertex(204, 567.1875);
-vertex(200, 575.1875);
-vertex(198, 581.1875);
-vertex(198, 591.1875);
-vertex(203, 596.1875);
-vertex(211, 596.1875);
-vertex(218, 587.1875);
-vertex(215, 581.1875);
-vertex(209, 569.1875);
-vertex(206, 565.1875);
-endShape(CLOSE);
-          beginShape();
-vertex(193, 529.1875);
-vertex(192, 534.1875);
-vertex(191, 538.1875);
-vertex(190, 541.1875);
-vertex(191, 544.1875);
-vertex(195, 545.1875);
-vertex(198, 543.1875);
-vertex(198, 538.1875);
-vertex(197, 533.1875);
-vertex(194, 527.1875);
-endShape(CLOSE);
-          
-            break;
+      case 'sad':
+  stroke(0, 0, 150, 150); // azul oscuro translúcido para el borde
+  fill(intensity * 150, intensity * 150, intensity * 255); // azul suave para la cabeza
+
+  // Cabeza redonda
+  ellipse(400, 500, 400, 400); // centro en (400,500), ancho y alto de 400
+
+  // Ojos tristes (arcos hacia abajo)
+  noFill();
+  stroke(0);
+  strokeWeight(5);
+  arc(320, 470, 50, 30, PI, 0); // ojo izquierdo (arco hacia abajo)
+  arc(480, 470, 50, 30, PI, 0); // ojo derecho
+
+  // Cejas inclinadas hacia arriba en el centro (tristeza)
+  stroke(80, 50, 0); // marrón oscuro
+  strokeWeight(6);
+  noFill();
+  beginShape();
+  vertex(290, 420); // parte exterior más baja
+  vertex(330, 410); // parte interior más alta
+  endShape();
+
+  beginShape();
+  vertex(470, 410); // parte interior más alta
+  vertex(510, 420); // parte exterior más baja
+  endShape();
+
+  // Boca triste (curva hacia abajo)
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  beginShape();
+  vertex(320, 600);
+  bezierVertex(380, 560, 420, 560, 480, 600); // curva hacia abajo
+  endShape();
+
+  // Lágrimas (pequeños óvalos azules debajo de los ojos)
+  noStroke();
+  fill(0, 100, 255, 180); // azul claro y translúcido
+  ellipse(320, 510, 10, 20); // lágrima ojo izquierdo
+  ellipse(480, 510, 10, 20); // lágrima ojo derecho
+
+  // Gotas cayendo más abajo
+  ellipse(320, 540, 8, 16); // segunda lágrima izquierda
+  ellipse(480, 540, 8, 16); // segunda lágrima derecha
+  break;
+
 
           case 'angry':
               stroke(200, 0, 0, 150); // rojo translúcido para el borde
-  fill(255, 0, 0); // rojo fuerte para la cabeza
+  fill(intensity*255, intensity*0, intensity*0); // rojo fuerte para la cabeza
 
   // Cabeza cuadrada
   beginShape();
@@ -505,55 +487,114 @@ endShape(CLOSE);
   endShape();
   break;
 
-          case 'surprised':
-            // Cas per a l'emoció "surprised" (sorprès)
-            stroke(100, 200, 255);
-            // Defineix el contorn amb un blau cel (RGB: 100, 200, 255)
-            fill(200, 240, 255, 150 * smoothIntensity);
-            // Omple la figura amb un blau molt clar, amb transparència variable segons la intensitat
-            const circles = 5 + floor(smoothIntensity * 8);
-            // Calcula el nombre de cercles concèntrics a dibuixar depenent de la intensitat
-            for (let i = 0; i < circles; i++) {
-              // Bucle per dibuixar cada cercle
-              const radius = baseSize * (0.2 + i / circles);
-              // Calcula el radi del cercle actual, augmentant gradualment amb cada iteració
-              ellipse(centerX, centerY, radius * 2, radius * 2);
-              // Dibuixa el cercle amb el diàmetre doble del radi
-            }
-            break;
+        case 'surprise':
+  stroke(0, 0, 200, 150); // azul translúcido para el borde
+  fill(intensity * 200, intensity * 200, intensity * 255); // azul claro para la cabeza
 
-          case 'disgusted':
-            // Cas per a l'emoció "disgusted" (fastiguejat)
-            stroke(100, 150, 50);
-            // Defineix el contorn amb un to verd fosc (RGB: 100, 150, 50)
-            fill(150, 200, 100, 150 * smoothIntensity);
-            // Omple amb un verd suau, amb opacitat ajustada segons la intensitat
-            beginShape();
-            for (let i = 0; i < 8; i++) {
-              // Bucle per generar 8 vertex per la forma
-              const angle = map(i, 0, 8, 0, TWO_PI);
-              // Distribueix 8 punts de manera uniforme al voltant del cercle
-              const radius = baseSize * (0.5 + noise(t + i * 0.5) * 0.5);
-              // Calcula el radi variable amb una combinació de valor base i la funció noise() per crear irregularitats
-              vertex(centerX + cos(angle) * radius, centerY + sin(angle) * radius);
-              // Defineix cada vertex amb coordenades convertides de polars a cartesianes
-            }
-            endShape(CLOSE);
-            break;
+  // Cabeza redonda (círculo)
+  ellipse(400, 500, 400, 400); // centro en (400,500), ancho y alto de 400
 
-          default:
-            // Cas per a qualsevol altra emoció (inclòs 'neutral')
-            stroke(150);
-            // Estableix el contorn amb un gris neutre (valor 150 de 0 a 255)
-            fill(220, 220, 220, 100);
-            // Omple amb un gris clar amb una opacitat suau
-            rectMode(CENTER);
-            // Indica que el rectangle es dibuixarà centrat en el punt (centerX, centerY)
-            const size = baseSize * 0.5;
-            // Defineix la mida del rectangle com la meitat de la mida base
-            rect(centerX, centerY, size, size, size * 0.2);
-            // Dibuixa el rectangle amb cantonades arrodonides, on l'últim paràmetre controla l'arrodoniment
-            break;
+  // Ojos grandes y redondos
+  fill(255); // blanco
+  stroke(0);
+  strokeWeight(2);
+  ellipse(320, 460, 60, 60); // ojo izquierdo
+  ellipse(480, 460, 60, 60); // ojo derecho
+
+  // Pupilas
+  fill(0); // negro
+  noStroke();
+  ellipse(320, 460, 20, 20); // pupila izquierda
+  ellipse(480, 460, 20, 20); // pupila derecha
+
+  // Cejas levantadas (líneas arqueadas hacia arriba)
+  stroke(80, 80, 80); // gris oscuro
+  strokeWeight(8);
+  noFill();
+  arc(320, 420, 80, 40, PI, TWO_PI); // ceja izquierda
+  arc(480, 420, 80, 40, PI, TWO_PI); // ceja derecha
+
+  // Boca abierta en forma de 'O'
+  fill(0); // negro
+  noStroke();
+  ellipse(400, 600, 60, 80); // boca ovalada
+  break;
+
+        case 'disgusted':
+  stroke(100, 80, 0, 150); // verde-amarillo oscuro translúcido para el borde
+  fill(intensity * 180, intensity * 220, intensity * 100); // verde amarillento para la cabeza
+
+  // Cabeza cuadrada
+  beginShape();
+  vertex(200, 300);
+  vertex(600, 300);
+  vertex(600, 700);
+  vertex(200, 700);
+  vertex(200, 300);
+  endShape(CLOSE);
+
+  // Ojos semicerrados (líneas rectas o pequeños arcos)
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  line(260, 450, 310, 455); // ojo izquierdo
+  line(490, 455, 540, 450); // ojo derecho
+
+  // Cejas fruncidas en forma de "∧ ∧"
+  stroke(80, 50, 0); // marrón oscuro
+  strokeWeight(6);
+  beginShape();
+  vertex(250, 420); // exterior más alto
+  vertex(280, 410); // interior más bajo
+  endShape();
+  beginShape();
+  vertex(520, 410); // interior más bajo
+  vertex(550, 420); // exterior más alto
+  endShape();
+
+  // Nariz arrugada (líneas pequeñas sobre la boca)
+  stroke(120, 100, 0);
+  strokeWeight(3);
+  line(370, 570, 390, 565);
+  line(410, 565, 430, 570);
+
+  // Boca torcida (asimétrica, tipo onda)
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  beginShape();
+  vertex(320, 620);
+  bezierVertex(370, 610, 420, 650, 480, 610); // curva con desequilibrio
+  endShape();
+  break;
+
+
+         default:
+  stroke(100, 100, 100, 150); // gris translúcido para el borde
+  fill(intensity * 200, intensity * 200, intensity * 200); // gris claro para la cabeza
+
+  // Cabeza redonda
+  ellipse(400, 500, 400, 400); // centro en (400,500), ancho y alto de 400
+
+  // Ojos simples (círculos)
+  fill(0); // negro
+  noStroke();
+  ellipse(320, 460, 30, 30); // ojo izquierdo
+  ellipse(480, 460, 30, 30); // ojo derecho
+
+  // Cejas rectas (neutras)
+  stroke(60);
+  strokeWeight(4);
+  line(290, 420, 350, 420); // ceja izquierda
+  line(450, 420, 510, 420); // ceja derecha
+
+  // Boca recta (neutralidad)
+  stroke(0);
+  strokeWeight(5);
+  noFill();
+  line(320, 600, 480, 600); // línea recta horizontal para la boca
+  break;
+
         }
       }
 
