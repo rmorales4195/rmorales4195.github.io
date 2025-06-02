@@ -296,6 +296,10 @@
         targetGradientStart = grad.start;
         targetGradientEnd = grad.end;
       }
+function getScaleFactor() {
+  // Ajusta 800 si tus dibujos están basados en coordenadas de 800x800
+  return min(width, height) / 800;
+}
 
       //--------------------------------------------------
       // FUNCIÓ draw (p5.js)
