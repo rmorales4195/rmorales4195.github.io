@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="ca">
-<!--
-  L'atribut "lang" especifica que el contingut està en català
--->
+<!-- L'atribut "lang" especifica que el contingut està en català -->
+
 <head>
   <meta charset="UTF-8">
-  <!--
-    Defineix la codificació de caràcters com UTF-8, assegurant la correcta visualització de tots els símbols
-  -->
+  <!-- Defineix la codificació de caràcters com UTF-8, assegurant la correcta visualització de tots els símbols -->
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--
-    Defineix el viewport perquè la pàgina s'adapti a dispositius mòbils:
-    - width=device-width: l'amplada coincideix amb la de l'aparell
-    - initial-scale=1.0: escala inicial de 100%
-  -->
-  <title>Art Facial Responsiu - Transicions Suaves i Fons Dinàmic</title>
-  <!--
-    Estableix el títol de la pàgina, que apareixerà a la pestanya del navegador
-  -->
+  <!-- Defineix el viewport perquè la pàgina s'adapti a dispositius mòbils:
+       - width=device-width: l'amplada coincideix amb la de l'aparell
+       - initial-scale=1.0: escala inicial de 100% -->
+
+  <title>Art Facial Responsiu - Transicions Suaus i Fons Dinàmic</title>
+  <!-- Estableix el títol de la pàgina, que apareixerà a la pestanya del navegador -->
+
   <!-- Carrega la biblioteca p5.js per al dibuix interactiu i la gestió del canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <!-- Carrega la biblioteca ml5.js, que conté models de machine learning com la detecció facial -->
@@ -90,9 +86,7 @@
     <p>Carregant models...</p>
   </div>
   <script>
-    //--------------------------------------------------
     // VARIABLES GLOBALES
-    //--------------------------------------------------
     let faceapi, detections = [], video;
     // "faceapi" serà l'objecte que ens gestionarà la detecció facial.
     // "detections" és una matriu (array) que emmagatzemarà les deteccions facials.
@@ -109,18 +103,14 @@
     let smoothIntensity = 0;
     // Això permet interpolar suaument entre l'estat anterior i el nou.
 
-    //--------------------------------------------------
     // VARIABLES PER AL FONS – GRADIENT DINÀMIC
-    //--------------------------------------------------
     let currentGradientStart, currentGradientEnd;
     // Colors actius per al gradient actual del fons.
 
     let targetGradientStart, targetGradientEnd;
     // Colors objectiu per al gradient, segons l’emoció detectada; s'interpolaran fins aconseguir la transició suau.
 
-    //--------------------------------------------------
     // FUNCIÓ PER OBTINDRE ELS COLORS DEL GRADIENT
-    //--------------------------------------------------
     function getGradientForEmotion(emotion) {
       // Aquesta funció rep com a paràmetre l'emoció i retorna un objecte amb dos colors: start i end.
       switch (emotion) {
@@ -139,11 +129,11 @@
       }
     }
 
-    //--------------------------------------------------
     // FUNCIÓ PER DIBUIXAR UN GRADIENT VERTICAL
-    //--------------------------------------------------
     function setGradient(x, y, w, h, c1, c2, axis = 'y') {
       // Aquesta funció pinta un gradient dins d'un rectangle definit per la posició (x,y) i dimensions (w, h).
+      // "c1" i "c2" són els colors inicial i final.
+      // "axis" indica si el gradient és vertical ('y') o horitzontal ('x'); per defecte és vertical.
       noFill();
       if (axis === 'y') {
         for (let i = y; i <= y + h; i++) {
@@ -162,9 +152,7 @@
       }
     }
 
-    //--------------------------------------------------
     // FUNCIÓ SETUP (p5.js)
-    //--------------------------------------------------
     function setup() {
       // Aquesta funció s'executa una sola vegada quan la pàgina es carrega.
       createCanvas(windowWidth, windowHeight);
@@ -191,39 +179,46 @@
 
       // INICIALITZACIÓ DE faceapi
       faceapi = ml5.faceApi(video, options, () => {
-        modelsReady = true;
+        // Aquesta funció callback s'executa quan el model ha estat carregat correctament.
+        modelsReady = true;  // Marquem que els models estan preparats.
+        // Amaguem la pantalla de càrrega perquè el model ja està llest.
         document.getElementById('loading-screen').style.display = 'none';
+        // Inicia la detecció facial, passant la funció gotResults com a callback per rebre resultats.
         faceapi.detect(gotResults);
       });
     }
 
-    //--------------------------------------------------
     // FUNCIÓ windowResized (p5.js)
-    //--------------------------------------------------
     function windowResized() {
+      // Aquesta funció s'executa cada cop que la finestra redimensiona.
       resizeCanvas(windowWidth, windowHeight);
+      // Ajusta el canvas a la nova mida de la finestra.
       video.size(max(160, width / 4), max(120, height / 4));
+      // També redimensiona la càmera, assegurant un mínim perquè el vídeo no es faci massa petit.
     }
 
-    //--------------------------------------------------
     // FUNCIÓ gotResults - Callback de detecció facial
-    //--------------------------------------------------
     function gotResults(err, results) {
+      // Aquesta funció s'executa cada cop que ml5.faceApi retorna resultats.
       if (err) {
+        // En cas d'error, imprimeix-lo a la consola.
         console.error(err);
+        // Mostra un missatge d'error en la pantalla de càrrega indicant un problema amb la càmera.
         document.getElementById('loading-screen').innerHTML =
           '<p style="color: red">Error! Comprova la càmera i actualitza.</p>';
         return;
       }
+      // Guarda les deteccions en la variable global "detections".
       detections = results;
+      // Si hi ha deteccions (almenys una cara detectada), actualitza l'expressió actual.
       if (detections.length > 0) updateCurrentExpression();
+      // Torna a cridar la detecció facial per obtenir resultats contínus.
       faceapi.detect(gotResults);
     }
 
-    //--------------------------------------------------
     // FUNCIÓ updateCurrentExpression
-    //--------------------------------------------------
     function updateCurrentExpression() {
+      // Aquesta funció recorre totes les deteccions facials i actualitza l'expressió dominant.
       let maxIntensity = 0;
       detections.forEach(face => {
         const expr = face.expressions;
@@ -236,27 +231,30 @@
           maxIntensity = expr[dominant];
         }
       });
+      // Actualitza els colors del gradient objectiu segons l'emoció dominant detectada.
       let grad = getGradientForEmotion(currentExpression.dominant);
       targetGradientStart = grad.start;
       targetGradientEnd = grad.end;
     }
 
     function scaleFactor() {
+      // Ajusta 800 si els dibuixos estan basats en coordenades de 800x800
       return Math.min(width, height) / 800;
     }
 
-    //--------------------------------------------------
     // FUNCIÓ draw (p5.js)
-    //--------------------------------------------------
     function draw() {
       // Aquesta funció s'executa constantment (frame per frame) per actualitzar el dibuix.
+      // Interpolació suau de l'intensitat: actualitza smoothIntensity per aconseguir una transició fluida.
       smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.1);
 
+      // Actualització suau dels colors del gradient:
       if (targetGradientStart && targetGradientEnd) {
         currentGradientStart = lerpColor(currentGradientStart, targetGradientStart, 0.1);
         currentGradientEnd = lerpColor(currentGradientEnd, targetGradientEnd, 0.1);
       }
 
+      // Dibuixa el fons dinàmic pintant un gradient vertical que cobreix tot el canvas.
       setGradient(0, 0, width, height, currentGradientStart, currentGradientEnd, 'y');
 
       // Dibuixa l'art interactiu al centre del canvas:
@@ -272,202 +270,236 @@
       drawVideoPreview();
     }
 
-    //--------------------------------------------------
     // FUNCIÓ drawArt
-    //--------------------------------------------------
     function drawArt() {
+      // Aquesta funció dibuixa formes artístiques basades en l'expressió facial detectada.
       const { dominant, intensity } = currentExpression;
       strokeWeight(map(smoothIntensity, 0, 1, 1, 4));
       noFill();
 
       // Utilitza un "switch" per determinar quina forma dibuixar segons l'expressió dominant.
       switch (dominant) {
-
         case 'happy':
+          // Cara rodona, boca somrient, galtes vermelles, celles altes
           stroke(0, 200, 0, 150);
-          fill(intensity * 180, intensity * 255, intensity * 180);
+          fill(255, 255, 180 + intensity * 75); // cara càlida
           ellipse(0, 0, 400, 400);
-          // Ojos en forma de arcos sonrientes
+
+          // Ulls: arcs somrients
           noFill();
           stroke(0);
           strokeWeight(5);
           arc(-80, -30, 50, 30, 0, PI);
           arc(80, -30, 50, 30, 0, PI);
-          // Cejas relajadas
+
+          // Celles altes i corbes
           stroke(80, 50, 0);
           strokeWeight(6);
-          noFill();
-          arc(-80, -70, 70, 30, PI, TWO_PI);
-          arc(80, -70, 70, 30, PI, TWO_PI);
-          // Boca sonriente
+          arc(-80, -70 - intensity * 10, 70, 30 + intensity * 15, PI, TWO_PI);
+          arc(80, -70 - intensity * 10, 70, 30 + intensity * 15, PI, TWO_PI);
+
+          // Galtes vermelles per intensitat
+          noStroke();
+          fill(255, 180, 180, 100*intensity);
+          ellipse(-70, 40, 40+intensity*25, 20+intensity*10);
+          ellipse(70, 40, 40+intensity*25, 20+intensity*10);
+
+          // Boca gran, més ampla amb intensitat
           stroke(0);
-          strokeWeight(5);
+          strokeWeight(5 + intensity * 3);
           noFill();
           beginShape();
           vertex(-80, 100);
-          bezierVertex(-20, 140, 20, 140, 80, 100);
+          bezierVertex(-20, 140 + intensity*40, 20, 140 + intensity*40, 80, 100);
           endShape();
           break;
 
         case 'sad':
+          // Cara blava, boca trista, celles inclinades, llàgrimes
           stroke(0, 0, 150, 150);
-          fill(intensity * 150, intensity * 150, intensity * 255);
+          fill(150, 150, 255, 200);
           ellipse(0, 0, 400, 400);
-          // Ojos tristes
+
+          // Ulls: arcs cap avall
           noFill();
           stroke(0);
           strokeWeight(5);
           arc(-80, -30, 50, 30, PI, 0);
           arc(80, -30, 50, 30, PI, 0);
-          // Cejas inclinadas
-          stroke(80, 50, 0);
+
+          // Celles: inclinades cap al centre
+          stroke(80,50,0);
           strokeWeight(6);
-          noFill();
           beginShape();
-          vertex(-110,-80);
-          vertex(-70,-90);
+          vertex(-110, -80);
+          vertex(-70, -90 - intensity*18);
           endShape();
           beginShape();
-          vertex(70,-90);
-          vertex(110,-80);
+          vertex(70, -90 - intensity*18);
+          vertex(110, -80);
           endShape();
-          // Boca triste
+
+          // Llàgrimes, més amb més intensitat
+          noStroke();
+          fill(0, 100, 255, 140+intensity*100);
+          ellipse(-80, 10, 10, 20+intensity*10);
+          ellipse(80, 10, 10, 20+intensity*10);
+          if (intensity > 0.5) {
+            ellipse(-80, 40, 8, 16+intensity*8);
+            ellipse(80, 40, 8, 16+intensity*8);
+          }
+
+          // Boca molt trista
           stroke(0);
-          strokeWeight(5);
+          strokeWeight(5 + intensity*3);
           noFill();
           beginShape();
           vertex(-80, 100);
-          bezierVertex(-20, 60, 20, 60, 80, 100);
+          bezierVertex(-20, 60-intensity*30, 20, 60-intensity*30, 80, 100);
           endShape();
-          // Lágrimas
-          noStroke();
-          fill(0, 100, 255, 180);
-          ellipse(-80, 10, 10, 20);
-          ellipse(80, 10, 10, 20);
-          ellipse(-80, 40, 8, 16);
-          ellipse(80, 40, 8, 16);
           break;
 
         case 'angry':
+          // Cara quadrada, vermella, boca enfadada, celles molt inclinades, galtes vermelles
           stroke(200, 0, 0, 150);
-          fill(intensity*255, intensity*0, intensity*0);
+          fill(255, 50+intensity*80, 50+intensity*40, 220);
           beginShape();
-          vertex(-200,-200);
-          vertex(200,-200);
-          vertex(200,200);
-          vertex(-200,200);
-          vertex(-200,-200);
+          vertex(-200,-200); vertex(200,-200); vertex(200,200); vertex(-200,200); vertex(-200,-200);
           endShape(CLOSE);
-          // Ojos cuadrados
+
+          // Ulls estrets i quadrats
           fill(0);
           noStroke();
-          rect(-150, -80, 60, 60);
-          rect(90, -80, 60, 60);
-          // Cejas en V
+          rect(-150, -80, 60, 60 - intensity*20, 10);
+          rect(90, -80, 60, 60 - intensity*20, 10);
+
+          // Celles molt inclinades
           stroke(80, 0, 0);
-          strokeWeight(10);
+          strokeWeight(10 + intensity*4);
           noFill();
           beginShape();
-          vertex(-140,-120);
-          vertex(-90,-135);
+          vertex(-140, -120);
+          vertex(-90, -135 - intensity*25);
           endShape();
           beginShape();
-          vertex(140,-120);
-          vertex(90,-135);
+          vertex(140, -120);
+          vertex(90, -135 - intensity*25);
           endShape();
-          // Boca fruncida
+
+          // Boca enfadada
           stroke(0);
-          strokeWeight(5);
+          strokeWeight(5 + intensity*3);
           noFill();
           beginShape();
           vertex(-80, 120);
-          bezierVertex(-20, 100, 20, 100, 80, 120);
+          bezierVertex(-20, 100 - intensity*30, 20, 100 - intensity*30, 80, 120);
           endShape();
+
+          // Galtes vermelles
+          noStroke();
+          fill(255, 60, 60, 40+intensity*120);
+          ellipse(-90, 40, 50, 20);
+          ellipse(90, 40, 50, 20);
           break;
 
         case 'surprised':
+          // Cara clara, boca 'O', ulls grans, celles molt altes
           stroke(0, 0, 200, 150);
-          fill(intensity * 200, intensity * 200, intensity * 255);
+          fill(180+intensity*50, 180+intensity*50, 255);
           ellipse(0, 0, 400, 400);
-          // Ojos grandes
+
+          // Ulls molt oberts
           fill(255);
           stroke(0);
           strokeWeight(2);
-          ellipse(-80, -40, 60, 60);
-          ellipse(80, -40, 60, 60);
-          // Pupilas
+          ellipse(-80, -40, 60+intensity*20, 60+intensity*20);
+          ellipse(80, -40, 60+intensity*20, 60+intensity*20);
+
+          // Pupiles grans
           fill(0);
           noStroke();
-          ellipse(-80, -40, 20, 20);
-          ellipse(80, -40, 20, 20);
-          // Cejas arqueadas
+          ellipse(-80, -40, 20+intensity*10, 20+intensity*10);
+          ellipse(80, -40, 20+intensity*10, 20+intensity*10);
+
+          // Celles molt altes
           stroke(80,80,80);
           strokeWeight(8);
           noFill();
-          arc(-80, -90, 80, 40, PI, TWO_PI);
-          arc(80, -90, 80, 40, PI, TWO_PI);
-          // Boca 'O'
+          arc(-80, -90-intensity*30, 80, 40+intensity*30, PI, TWO_PI);
+          arc(80, -90-intensity*30, 80, 40+intensity*30, PI, TWO_PI);
+
+          // Boca gran 'O'
           fill(0);
           noStroke();
-          ellipse(0, 100, 60, 80);
+          ellipse(0, 100, 60+intensity*30, 80+intensity*30);
           break;
 
         case 'disgusted':
+          // Cara verda, boca torçada, celles arquejades, ulls semicerrats, nas arrugat
           stroke(100, 80, 0, 150);
-          fill(intensity * 180, intensity * 220, intensity * 100);
+          fill(180, 220, 100 - intensity*50, 220);
           beginShape();
-          vertex(-200,-200);
-          vertex(200,-200);
-          vertex(200,200);
-          vertex(-200,200);
-          vertex(-200,-200);
+          vertex(-200,-200); vertex(200,-200); vertex(200,200); vertex(-200,200); vertex(-200,-200);
           endShape(CLOSE);
-          // Ojos semicerrados
+
+          // Ulls semicerrats
           stroke(0);
-          strokeWeight(5);
+          strokeWeight(5 + intensity*2);
           noFill();
-          line(-140, -50, -90, -45);
-          line(90, -45, 140, -50);
-          // Cejas
+          line(-140, -50, -90, -45-intensity*10);
+          line(90, -45-intensity*10, 140, -50);
+
+          // Celles arquejades
           stroke(80,50,0);
           strokeWeight(6);
           beginShape();
           vertex(-150,-80);
-          vertex(-120,-90);
+          vertex(-120,-90-intensity*9);
           endShape();
           beginShape();
-          vertex(120,-90);
+          vertex(120,-90-intensity*9);
           vertex(150,-80);
           endShape();
-          // Nariz arrugada
-          stroke(120,100,0);
-          strokeWeight(3);
-          line(-30, 70, -10, 65);
-          line(10, 65, 30, 70);
-          // Boca torcida
+
+          // Nas arrugat
+          stroke(120, 100, 0);
+          strokeWeight(3+intensity*2);
+          line(-30, 70, -10, 65-intensity*6);
+          line(10, 65-intensity*6, 30, 70);
+
+          // Boca torçada
           stroke(0);
-          strokeWeight(5);
+          strokeWeight(5 + intensity*3);
           noFill();
           beginShape();
           vertex(-80, 120);
-          bezierVertex(-30, 110, 20, 150, 80, 110);
+          bezierVertex(-30, 110-intensity*20, 20, 150+intensity*30, 80, 110-intensity*20);
           endShape();
+
+          // Sota la boca, verd per nàusea
+          noStroke();
+          fill(90, 200, 90, 70+intensity*100);
+          ellipse(0, 160, 120+intensity*50, 40+intensity*20);
           break;
 
         default:
+          // Cara neutra, boca recta, celles rectes, ulls simples
           stroke(100,100,100,150);
-          fill(intensity * 200, intensity * 200, intensity * 200);
+          fill(200, 200, 200, 200);
           ellipse(0, 0, 400, 400);
-          // Ojos simples
+
+          // Ulls simples
           fill(0);
           noStroke();
           ellipse(-80, -40, 30, 30);
           ellipse(80, -40, 30, 30);
-          // Cejas rectas
+
+          // Celles rectes
           stroke(60);
           strokeWeight(4);
           line(-110, -80, -50, -80);
           line(50, -80, 110, -80);
+
           // Boca recta
           stroke(0);
           strokeWeight(5);
@@ -477,9 +509,7 @@
       }
     }
 
-    //--------------------------------------------------
     // FUNCIÓ drawHUD
-    //--------------------------------------------------
     function drawHUD() {
       // Aquesta funció dibuixa el Heads-Up Display que mostra un emoticon i el percentatge d'intensitat.
       const traduccions = {
@@ -494,14 +524,12 @@
       const emoticon = traduccions[currentExpression.dominant] || "😐 Neutral";
       noStroke();
       fill(50, 150, 255);
-      textSize(map(width, 500, 1200, 16, 24)); // changed 300 to 500 for wider scaling
+      textSize(map(width, 500, 1200, 16, 24)); // la mida del text s'ajusta
       textAlign(CENTER, TOP);
       text(`${emoticon} (${floor(smoothIntensity * 100)}%)`, width / 2, 20);
     }
 
-    //--------------------------------------------------
     // FUNCIÓ drawVideoPreview
-    //--------------------------------------------------
     function drawVideoPreview() {
       // Aquesta funció dibuixa una petita previsualització del vídeo de la càmera a la cantonada inferior dreta.
       const previewSize = min(width, height) * 0.15;
@@ -514,9 +542,7 @@
       );
     }
 
-    //--------------------------------------------------
     // GESTIÓ D'ERRORS AMB LA CÀMERA
-    //--------------------------------------------------
     // Demana accés a la càmera del dispositiu.
     navigator.mediaDevices.getUserMedia({ video: true })
       .catch(err => {
