@@ -69,16 +69,9 @@
   <script>
     // VARIABLES GLOBALES
     let faceapi, detections = [], video;
-    // "faceapi" serà l'objecte que ens gestionarà la detecció facial.
-    // "detections" és una matriu (array) que emmagatzemarà les deteccions facials.
-    // "video" guardarà el flux de vídeo capturat des de la càmera.
-
     let modelsReady = false;
-    // Variable booleana que indicarà si els models han estat carregats correctament (comença en false).
     let currentExpression = { dominant: 'neutral', intensity: 0 };
-    // Objecte que emmagatzema l'expressió facial actual.
     let smoothIntensity = 0;
-    // Això permet interpolar suaument entre l'estat anterior i el nou.
 
     // VARIABLES PER AL FONS – GRADIENT DINÀMIC
     let currentGradientStart, currentGradientEnd;
@@ -127,7 +120,6 @@
       }
     }
 
-    // FUNCIÓ SETUP (p5.js)
     function setup() {
       createCanvas(windowWidth, windowHeight);
       let neutralGrad = getGradientForEmotion('neutral');
@@ -153,13 +145,11 @@
       });
     }
 
-    // FUNCIÓ windowResized (p5.js)
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
       video.size(max(160, width / 4), max(120, height / 4));
     }
 
-    // FUNCIÓ gotResults - Callback de detecció facial
     function gotResults(err, results) {
       if (err) {
         console.error(err);
@@ -172,7 +162,6 @@
       faceapi.detect(gotResults);
     }
 
-    // FUNCIÓ updateCurrentExpression
     function updateCurrentExpression() {
       let maxIntensity = 0;
       detections.forEach(face => {
@@ -189,176 +178,188 @@
       let grad = getGradientForEmotion(currentExpression.dominant);
       targetGradientStart = grad.start;
       targetGradientEnd = grad.end;
-      // Actualitza la geometria per mostrar la mateixa expressió
       geomExpr = currentExpression.dominant;
       geomIntensity = currentExpression.intensity;
     }
 
     function scaleFactor() {
-      return Math.min(width, height) / 800;
+      // Adapta la mida de la quadrícula a la pantalla
+      return Math.min(width, height) / 400;
     }
 
-    // FUNCIÓ draw (p5.js)
     function draw() {
       smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.1);
-
       if (targetGradientStart && targetGradientEnd) {
         currentGradientStart = lerpColor(currentGradientStart, targetGradientStart, 0.1);
         currentGradientEnd = lerpColor(currentGradientEnd, targetGradientEnd, 0.1);
       }
-
       setGradient(0, 0, width, height, currentGradientStart, currentGradientEnd, 'y');
 
       // Dibuixa l'art geomètric expressiu al centre del canvas
       push();
       translate(width / 2, height / 2);
-      // Dibuixa la peça geomètrica animada segons l'expressió detectada
-      drawGeometricFace(geomExpr, geomIntensity);
+      scale(scaleFactor());
+      drawGeometricFace(geomExpr, smoothIntensity);
       pop();
 
-      // Dibuixa la interfície (HUD) amb informació textual (emoticon i percentatge).
       drawHUD();
-      // Dibuixa una previsualització petita del vídeo en una cantonada.
       drawVideoPreview();
     }
 
     /*
       // Dibuixa la peça geomètrica amb modificacions subtils segons l'expressió
-      // Cada triangle/polígon pot canviar de color, rotació, o posició per simular emoció
+      // Cada triangle/polígon pot canviar de color, rotació, escala, posició per simular emoció
       // Inspirat en la imatge referència ![image1](image1)
+      // Ara amb més realisme facial: boca més corba i ampla, ulls més expressius, "galtes" per happy
     */
     function drawGeometricFace(expr, inten) {
-      // Paleta bàsica
-      let baseColors = {
-        dark: color(40, 10, 10),
-        red: color(220, 60, 20),
+      let N = 4; // files i columnes
+      let cellSize = 100;
+      let off = -cellSize*(N/2) + cellSize/2;
+
+      // Paleta fidel a la imatge
+      let palette = {
         orange: color(255, 110, 30),
-        gray: color(180),
-        brown: color(110, 60, 30)
+        dark: color(37, 25, 23),
+        red: color(234, 60, 35),
+        brown: color(141, 75, 36),
+        gray: color(189, 189, 189)
       };
-      // Animació: canvia lleugerament tons segons expressió
-      let exp = expr || "neutral";
-      if (exp === "happy") {
-        baseColors.orange = lerpColor(baseColors.orange, color(255,200,50), inten);
-        baseColors.red = lerpColor(baseColors.red, color(255,100,80), inten);
-      } else if (exp === "sad") {
-        baseColors.orange = lerpColor(baseColors.orange, color(100,150,255), inten);
-        baseColors.red = lerpColor(baseColors.red, color(80,110,180), inten);
-        baseColors.gray = lerpColor(baseColors.gray, color(220,220,255), inten);
-      } else if (exp === "angry") {
-        baseColors.red = lerpColor(baseColors.red, color(180,10,10), inten);
-        baseColors.dark = lerpColor(baseColors.dark, color(120,0,0), inten);
-      } else if (exp === "surprised") {
-        baseColors.gray = lerpColor(baseColors.gray, color(255,255,255), inten);
-        baseColors.orange = lerpColor(baseColors.orange, color(255,220,160), inten);
-      } else if (exp === "disgusted") {
-        baseColors.orange = lerpColor(baseColors.orange, color(140,220,130), inten);
-        baseColors.red = lerpColor(baseColors.red, color(120,180,90), inten);
-      }
 
-      // Dibuixa el quadrat exterior (marge marró)
-      fill(baseColors.brown);
-      stroke(40);
-      strokeWeight(3);
-      rectMode(CENTER);
-      rect(0, 0, 240, 240, 6);
-
-      // Dibuixa la graella interna de triangles (4x4)
-      let s = 48; // mida d'un quadrat de la graella
-      let o = -3 * s/2; // offset per centrar
-      for (let row = 0; row < 4; row++) {
-        for (let col = 0; col < 4; col++) {
+      // Dibuixa la quadrícula
+      for (let i=0; i<N; i++) {
+        for (let j=0; j<N; j++) {
           push();
-          let cx = o + col*s + s/2;
-          let cy = o + row*s + s/2;
-          translate(cx, cy);
+          translate(off + j*cellSize, off + i*cellSize);
 
-          // Happy: boca (fila 2)
-          if (exp === "happy" && row === 2 && (col === 1 || col === 2)) {
-            fill(baseColors.red);
-            rotate(-PI/12);
-            triangle(-s/2, s/2, s/2, s/2, 0, -s/2 - inten*8);
-          }
-          // Sad: boca (fila 2)
-          else if (exp === "sad" && row === 2 && (col === 1 || col === 2)) {
-            fill(baseColors.gray);
-            rotate(PI/12);
-            triangle(-s/2, -s/2, s/2, -s/2, 0, s/2 + inten*8);
-          }
-          // Angry: central (punxes)
-          else if (exp === "angry" && row === 1 && (col === 1 || col === 2)) {
-            fill(baseColors.red);
-            triangle(-s/2, s/2, s/2, s/2, 0, -s/2 - inten*15);
-          }
-          // Surprised: boca molt oberta (fila 2)
-          else if (exp === "surprised" && row === 2 && (col === 1 || col === 2)) {
-            fill(baseColors.gray);
-            ellipse(0, 0, s*0.9 + inten*25, s*0.9 + inten*25);
-          }
-          // Disgusted: boca distorsionada
-          else if (exp === "disgusted" && row === 2 && col === 2) {
-            fill(baseColors.orange);
-            beginShape();
-            vertex(-s/2, s/2);
-            vertex(s/2, s/2);
-            vertex(0, -s/2 + inten*10);
-            vertex(-s/3, 0);
-            endShape(CLOSE);
-          }
-          // Ulls expressius
-          else if ((row === 1 && (col === 1 || col === 2))) {
-            if (exp === "happy") {
-              fill(baseColors.orange);
-              arc(0, -s/8, s*0.7, s*0.5, 0, PI, OPEN);
-            } else if (exp === "sad") {
-              fill(baseColors.gray);
-              arc(0, 0, s*0.7, s*0.5, PI, 0, OPEN);
-            } else if (exp === "angry") {
-              fill(baseColors.red);
-              arc(0, -s/6, s*0.7, s*0.4, PI*1.2, PI*1.9, OPEN);
-            } else if (exp === "surprised") {
-              fill(baseColors.gray);
-              ellipse(0, 0, s*0.6 + inten*8, s*0.6 + inten*8);
-            } else if (exp === "disgusted") {
-              fill(baseColors.orange);
-              beginShape();
-              vertex(-s/4, s/8);
-              vertex(s/4, s/8);
-              vertex(0, -s/4 - inten*8);
-              endShape(CLOSE);
-            } else {
-              fill(baseColors.orange);
-              triangle(-s/2, -s/2, s/2, -s/2, 0, s/2);
+          // Fons: quadrat darrera
+          fill((i+j)%2==0 ? palette.orange : palette.red);
+          noStroke();
+          square(0,0,cellSize);
+
+          let triRotate = 0;
+          let drawTri = true;
+
+          // Celles (row 0, col 1 i 2)
+          if (i==0 && (j==1 || j==2)) {
+            // Realisme: celles més accentuades segons intensitat
+            if (expr=="happy") {
+              fill(palette.dark);
+              triRotate = lerp(0, -PI/7, inten);
+            } else if (expr=="sad") {
+              fill(palette.dark);
+              triRotate = lerp(0, PI/7, inten);
+            } else if (expr=="angry") {
+              fill(palette.red);
+              triRotate = (j==1) ? lerp(0, -PI/4, inten) : lerp(0, PI/4, inten);
+            } else if (expr=="surprised") {
+              fill(palette.gray);
+              triRotate = lerp(0, -PI/30, inten);
+            } else if (expr=="disgusted") {
+              fill(palette.gray);
+              triRotate = (j==1) ? lerp(0, PI/10, inten) : lerp(0, -PI/10, inten);
+            } else { // neutral
+              fill(palette.dark);
+              triRotate = 0;
             }
+            rotate(triRotate);
+            triangle(-cellSize/2,cellSize/2, cellSize/2,cellSize/2, 0,-cellSize/2);
           }
-          // Altres: fons geomètric
+          // Ulls (row 1, col 1 i 2)
+          else if (i==1 && (j==1 || j==2)) {
+            // Ulls més grans, expressius i separats segons emoció
+            let eyeOpen = 0.5 + 0.5 * ((expr=="surprised") ? inten : (expr=="happy"? 0.7*inten : 0));
+            let eyeColor = (expr=="angry") ? palette.red : (expr=="sad" ? palette.gray : palette.dark);
+            fill(eyeColor);
+            ellipse(0,0,cellSize/2,cellSize/2.2 + (expr=="surprised"? eyeOpen*cellSize/8 : 0));
+            // Brillantor a l'ull per happy/surprised
+            if (expr=="happy" || expr=="surprised") {
+              fill(255,220);
+              ellipse(cellSize/10,-cellSize/12,cellSize/10,cellSize/10);
+            }
+            drawTri = false;
+          }
+          // Boca (row 2, col 1 i 2)
+          else if (i==2 && (j==1 || j==2)) {
+            // Més realisme: boca corba i ampla per happy, més tancada per sad
+            let mouthY = lerp(0, 18, inten);
+            let mouthW = lerp(cellSize*0.65, cellSize*1.1, inten);
+            if (expr=="happy") {
+              noFill();
+              stroke(palette.red);
+              strokeWeight(7+inten*3);
+              arc(0,mouthY+10,mouthW,cellSize/2+inten*16,0.1*PI,0.9*PI);
+              noStroke();
+              // Galtes decoratives
+              fill(255,170,170,70+150*inten);
+              ellipse(-cellSize/2.5,cellSize/5,cellSize/4+inten*10,cellSize/8+inten*5);
+              ellipse(cellSize/2.5,cellSize/5,cellSize/4+inten*10,cellSize/8+inten*5);
+              drawTri = false;
+            }
+            else if (expr=="sad") {
+              noFill();
+              stroke(palette.gray);
+              strokeWeight(6+inten*2);
+              arc(0,cellSize/3,cellSize*0.75,cellSize/3+inten*10,1.1*PI,1.9*PI);
+              noStroke();
+              // Llàgrima blava
+              if(inten>0.3){
+                fill(100,160,255,170);
+                ellipse(-cellSize/4,cellSize/9,cellSize/13,cellSize/7+inten*7);
+                ellipse(cellSize/4,cellSize/9,cellSize/13,cellSize/7+inten*7);
+              }
+              drawTri = false;
+            }
+            else if (expr=="angry") {
+              fill(palette.red);
+              rotate((j==1) ? lerp(0, -PI/8, inten) : lerp(0, PI/8, inten));
+            }
+            else if (expr=="surprised") {
+              fill(palette.gray);
+              ellipse(0,cellSize/7,cellSize*0.7+inten*15,cellSize*0.5+inten*20);
+              drawTri = false;
+            }
+            else if (expr=="disgusted") {
+              fill(palette.gray);
+              rotate((j==1) ? lerp(0, PI/7, inten) : lerp(0, -PI/10, inten));
+            }
+            else {
+              fill(palette.dark);
+            }
+            if(drawTri)
+              triangle(-cellSize/2,cellSize/2, cellSize/2,cellSize/2, 0,-cellSize/2);
+          }
+          // Dents/boca (row 3, col 1 i 2)
+          else if (i==3 && (j==1 || j==2)) {
+            if (expr=="happy" || expr=="neutral") {
+              fill(palette.orange);
+            } else if (expr=="sad") {
+              fill(palette.gray);
+            } else if (expr=="angry") {
+              fill(palette.red);
+            } else if (expr=="surprised") {
+              fill(palette.gray);
+            } else if (expr=="disgusted") {
+              fill(palette.gray);
+            }
+            rect(0,0,cellSize*0.8,cellSize/5,6);
+            drawTri = false;
+          }
+          // Altres triangles fons
           else {
-            if ((row+col)%2 == 0)
-              fill(baseColors.orange);
-            else
-              fill(baseColors.dark);
-            triangle(-s/2, -s/2, s/2, -s/2, 0, s/2);
+            fill((i+j)%2==0 ? palette.orange : palette.dark);
+            triRotate = 0;
+          }
+          // Triangle central a tot arreu menys ulls/boca/celles
+          if(drawTri && !(i==1 && (j==1 || j==2)) && !(i==2 && (j==1 || j==2)) && !(i==0 && (j==1 || j==2)) && !(i==3 && (j==1 || j==2))){
+            rotate(triRotate);
+            triangle(-cellSize/2,cellSize/2, cellSize/2,cellSize/2, 0,-cellSize/2);
           }
           pop();
         }
       }
-      // Somriure addicional per happy
-      if (exp === "happy") {
-        noFill();
-        stroke(255, 180, 60, 180);
-        strokeWeight(7);
-        arc(0, 52, 80+inten*20, 30+inten*8, 0.15*PI, 0.85*PI);
-      }
-      // Boca trista addicional per sad
-      if (exp === "sad") {
-        noFill();
-        stroke(80, 130, 255, 180);
-        strokeWeight(6);
-        arc(0, 58, 65+inten*18, 26+inten*8, 1.1*PI, 1.9*PI);
-      }
     }
 
-    // FUNCIÓ drawHUD
     function drawHUD() {
       const traduccions = {
         happy: "😃 Feliç",
@@ -377,7 +378,6 @@
       text(`${emoticon} (${floor(smoothIntensity * 100)}%)`, width / 2, 20);
     }
 
-    // FUNCIÓ drawVideoPreview
     function drawVideoPreview() {
       const previewSize = min(width, height) * 0.15;
       image(
@@ -389,7 +389,6 @@
       );
     }
 
-    // GESTIÓ D'ERRORS AMB LA CÀMERA
     navigator.mediaDevices.getUserMedia({ video: true })
       .catch(err => {
         document.getElementById('loading-screen').innerHTML = `
