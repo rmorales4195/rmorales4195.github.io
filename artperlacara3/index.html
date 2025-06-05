@@ -270,7 +270,7 @@
         vertex(-92, -74-12+20*inten);
         vertex(-82, -56);
         vertex(-42, -56);
-        vertex(-32, -74-12+20*inten);
+        vertex(-32, -86+20*inten);
       } else if(expr==='angry') {
         vertex(-92, -92-26*inten);
         vertex(-82, -62);
@@ -380,6 +380,10 @@
         vertex(mouthW, mouthY+mouthH+28*inten);
         vertex(-mouthW, mouthY+mouthH+28*inten);
       } else if(expr==='angry') {
+        stroke(0);
+      strokeWeight(5);
+       //pelo lines con 4 numeros i los dos primeros son la linea inicial i los dos ultimos los del final
+        line(
         // Boca enfadada quadrada i tensa
         vertex(-mouthW, mouthY+15-22*inten);
         vertex(0, mouthY-30*inten);
