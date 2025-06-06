@@ -1,25 +1,13 @@
 <!DOCTYPE html>
 <html lang="ca">
-<!--
-  L'atribut "lang" especifica que el contingut està en català
-  Aquesta obra geomètrica s'animarà per mostrar expressions (somriure, tristesa, etc.)
-  segons el model de codi facial interactiu.
-  Imatge referència: ![image1](image1)
--->
 <head>
   <meta charset="UTF-8">
-  <!-- Defineix la codificació de caràcters com UTF-8, assegurant la correcta visualització de tots els símbols -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Defineix el viewport perquè la pàgina s'adapti a dispositius mòbils -->
   <title>Art Facial Responsiu - Transicions Suaus i Fons Dinàmic</title>
-  <!-- Estableix el títol de la pàgina, que apareixerà a la pestanya del navegador -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
-  <!-- Carrega la biblioteca p5.js per al dibuix interactiu i la gestió del canvas -->
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
-  <!-- Aquest script carrega ml5.js en una versió compilada, utilitzada per la detecció facial -->
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #222; }
-    /* Fons fosc per ressaltar la peça geomètrica */
     #loading-screen {
       position: fixed;
       top: 0;
@@ -53,42 +41,23 @@
   </style>
 </head>
 <body>
-<!--
-  // Aquesta pàgina mostra una animació d'una obra geomètrica (imatge 1)
-  // on la composició de triangles es transforma per expressar emocions:
-  // happy, sad, angry, surprised, disgusted i neutral.
-  // Els canvis són subtils, artístics i inspirats en la pintura original.
-  // Imatge: ![image1](image1)
--->
   <div id="loading-screen">
-    <!-- Aquest element conté el cercle giratori -->
     <div class="loader"></div>
-    <!-- I un missatge per informar a l'usuari que es carreguen els models -->
     <p>Carregant models...</p>
   </div>
   <script>
-    // VARIABLES GLOBALES
     let faceapi, detections = [], video;
-    // "faceapi" serà l'objecte que ens gestionarà la detecció facial.
-    // "detections" és una matriu (array) que emmagatzemarà les deteccions facials.
-    // "video" guardarà el flux de vídeo capturat des de la càmera.
     let modelsReady = false;
     let currentExpression = { dominant: 'neutral', intensity: 0 };
-    // Objecte amb l'expressió facial detectada i la seva intensitat.
     let smoothIntensity = 0;
-    // Valor interpolat per suavitzar canvis d'intensitat.
 
-    // VARIABLES PER AL FONS – GRADIENT DINÀMIC
     let currentGradientStart, currentGradientEnd;
     let targetGradientStart, targetGradientEnd;
 
-    // Variables per l'animació geomètrica
-    let geomIntensity = 0.8; // Intensitat per a la geometria (0 a 1)
+    let geomIntensity = 0.8;
     let geomExpr = "neutral";
 
-    // FUNCIÓ PER OBTINDRE ELS COLORS DEL GRADIENT
     function getGradientForEmotion(emotion) {
-      // Retorna colors de gradient segons l'emoció.
       switch (emotion) {
         case 'happy':
           return { start: color(255, 223, 186), end: color(255, 183, 77) };
@@ -105,9 +74,7 @@
       }
     }
 
-    // FUNCIÓ PER DIBUIXAR UN GRADIENT VERTICAL
     function setGradient(x, y, w, h, c1, c2, axis = 'y') {
-      // Dibuixa un gradient (vertical o horitzontal) sobre el fons.
       noFill();
       if (axis === 'y') {
         for (let i = y; i <= y + h; i++) {
@@ -127,7 +94,6 @@
     }
 
     function setup() {
-      // Inicialitza canvas, vídeo i model facial.
       createCanvas(windowWidth, windowHeight);
       let neutralGrad = getGradientForEmotion('neutral');
       currentGradientStart = neutralGrad.start;
@@ -153,13 +119,11 @@
     }
 
     function windowResized() {
-      // Redimensiona el canvas i el vídeo quan la finestra canvia de mida.
       resizeCanvas(windowWidth, windowHeight);
       video.size(max(160, width / 4), max(120, height / 4));
     }
 
     function gotResults(err, results) {
-      // Callback dels resultats de la detecció facial.
       if (err) {
         console.error(err);
         document.getElementById('loading-screen').innerHTML =
@@ -172,7 +136,6 @@
     }
 
     function updateCurrentExpression() {
-      // Troba l'emoció més dominant i n'actualitza la intensitat.
       let maxIntensity = 0;
       detections.forEach(face => {
         const expr = face.expressions;
@@ -193,12 +156,10 @@
     }
 
     function scaleFactor() {
-      // Escala per a la mida de la cara geomètrica.
       return Math.min(width, height) / 400;
     }
 
     function draw() {
-      // Dibuixa el fons i la cara geomètrica segons l'expressió detectada.
       smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.1);
       if (targetGradientStart && targetGradientEnd) {
         currentGradientStart = lerpColor(currentGradientStart, targetGradientStart, 0.1);
@@ -214,9 +175,7 @@
       drawVideoPreview();
     }
 
-    // Dibuixa una cara quadrada i boca/ulls/celles amb beginShape/endShape(CLOSE)
     function drawGeometricFace(expr, inten) {
-      // Paràmetres de la cara quadrada
       let s = 320;
       let faceColor;
       switch(expr) {
@@ -225,13 +184,63 @@
         case 'angry': faceColor = color(255, 130, 110); break;
         case 'disgusted': faceColor = color(200, 240, 180); break;
         case 'surprised': faceColor = color(220, 210, 255); break;
-        default: faceColor = color(230,230,230); // neutral
+        default: faceColor = color(230,230,230);
       }
-      // Cara quadrada
       noStroke();
       fill(faceColor);
       rectMode(CENTER);
       rect(0,0,s,s,28);
+
+      // --------- Dos CUERNOS para Angry ---------
+      if(expr === 'angry') {
+        // Cuerno izquierdo
+        let hornBaseLX = -s/4;
+        let hornBaseLY = -s/2 + 30;
+        let hornLAngle = -PI/6;
+        let hornLength = 58 + 50*inten;
+        let hornWidth = 28 + 18*inten;
+        fill(255,255,255);
+        stroke(200); strokeWeight(3);
+        beginShape();
+          vertex(
+            hornBaseLX + hornLength * sin(hornLAngle), 
+            hornBaseLY - hornLength * cos(hornLAngle)
+          ); // punta izquierda
+          vertex(hornBaseLX - hornWidth/2, hornBaseLY);
+          vertex(hornBaseLX + hornWidth/2, hornBaseLY);
+        endShape(CLOSE);
+        // Decoración línea interior izquierda
+        stroke(230,180,255,160);
+        strokeWeight(2);
+        line(
+          hornBaseLX, hornBaseLY,
+          hornBaseLX + (hornLength-10) * sin(hornLAngle), 
+          hornBaseLY - (hornLength-10) * cos(hornLAngle)
+        );
+        noStroke();
+
+        // Cuerno derecho
+        hornBaseLX = s/4;
+        hornLAngle = PI/6;
+        fill(255,255,255); stroke(200); strokeWeight(3);
+        beginShape();
+          vertex(
+            hornBaseLX + hornLength * sin(hornLAngle), 
+            hornBaseLY - hornLength * cos(hornLAngle)
+          ); // punta derecha
+          vertex(hornBaseLX - hornWidth/2, hornBaseLY);
+          vertex(hornBaseLX + hornWidth/2, hornBaseLY);
+        endShape(CLOSE);
+        // Decoración línea interior derecha
+        stroke(230,180,255,160);
+        strokeWeight(2);
+        line(
+          hornBaseLX, hornBaseLY,
+          hornBaseLX + (hornLength-10) * sin(hornLAngle), 
+          hornBaseLY - (hornLength-10) * cos(hornLAngle)
+        );
+        noStroke();
+      }
 
       // ULLS (quadrats i negres, més oberts o tancats segons intensitat/expressió)
       fill(30);
@@ -368,43 +377,47 @@
       beginShape();
       let mouthY = 86, mouthW = 120, mouthH = 38+40*inten;
       if(expr==='happy') {
-        // Somriure quadrat amb vertex
         vertex(-mouthW, mouthY);
         bezierVertex(-60, mouthY+mouthH, 60, mouthY+mouthH, mouthW, mouthY);
         vertex(mouthW, mouthY+28*inten);
         vertex(-mouthW, mouthY+28*inten);
       } else if(expr==='sad') {
-        // Boca trista quadrada
         vertex(-mouthW, mouthY+mouthH);
         bezierVertex(-60, mouthY, 60, mouthY, mouthW, mouthY+mouthH);
         vertex(mouthW, mouthY+mouthH+28*inten);
         vertex(-mouthW, mouthY+mouthH+28*inten);
       } else if(expr==='angry') {
         stroke(0);
-      strokeWeight(5);
-       //pelo lines con 4 numeros i los dos primeros son la linea inicial i los dos ultimos los del final
-       // line(
-        // Boca enfadada quadrada i tensa
+        strokeWeight(5);
         vertex(-mouthW, mouthY+15-22*inten);
         vertex(0, mouthY-30*inten);
         vertex(mouthW, mouthY+15-22*inten);
         vertex(mouthW, mouthY+37*inten);
         vertex(-mouthW, mouthY+37*inten);
+        // --- PÈLS ENFADATS ---
+        let hairCount = 7;
+        let hairBaseY = -s/2+8;
+        for(let i=0; i<hairCount; i++){
+          let x = map(i,0,hairCount-1,-s/2+28,s/2-28);
+          let l = 46 + 44*inten;
+          let angle = map(i,0,hairCount-1,-PI/5,PI/5);
+          let ex = x + l*sin(angle);
+          let ey = hairBaseY - l*cos(angle);
+          line(x, hairBaseY, ex, ey);
+        }
+        noStroke();
       } else if(expr==='surprised') {
-        // Boca sorpresa: quadrada gran
         let ww = 60+70*inten, hh = 54+70*inten;
         vertex(-ww, mouthY+18-hh/2);
         vertex(ww, mouthY+18-hh/2);
         vertex(ww, mouthY+18+hh/2);
         vertex(-ww, mouthY+18+hh/2);
       } else if(expr==='disgusted') {
-        // Boca torçada quadrada
         vertex(-mouthW, mouthY+14*inten);
         bezierVertex(-40, mouthY-20*inten, 40, mouthY+40*inten, mouthW, mouthY-10*inten);
         vertex(mouthW, mouthY+18*inten);
         vertex(-mouthW, mouthY+18*inten);
       } else {
-        // Boca neutral quadrada
         vertex(-mouthW, mouthY);
         vertex(mouthW, mouthY);
         vertex(mouthW, mouthY+18);
@@ -414,7 +427,6 @@
     }
 
     function drawHUD() {
-      // Mostra l'emoció actual i el percentatge d'intensitat.
       const traduccions = {
         happy: "😃 Feliç",
         sad: "😢 Trist",
@@ -433,7 +445,6 @@
     }
 
     function drawVideoPreview() {
-      // Previsualització de la càmera a la cantonada.
       const previewSize = min(width, height) * 0.15;
       image(
         video,
@@ -444,7 +455,6 @@
       );
     }
 
-    // GESTIÓ D'ERRORS AMB LA CÀMERA
     navigator.mediaDevices.getUserMedia({ video: true })
       .catch(err => {
         document.getElementById('loading-screen').innerHTML = `
