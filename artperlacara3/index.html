@@ -41,11 +41,17 @@
   </style>
 </head>
 <body>
+  <!--
+    Aquesta obra geomètrica s'animarà per mostrar expressions (somriure, tristesa, etc.)
+    segons el model de codi facial interactiu.
+    Els cabells laterals només surten en "angry".
+  -->
   <div id="loading-screen">
     <div class="loader"></div>
     <p>Carregant models...</p>
   </div>
   <script>
+    // Variables globals per gestió facial i visual
     let faceapi, detections = [], video;
     let modelsReady = false;
     let currentExpression = { dominant: 'neutral', intensity: 0 };
@@ -57,6 +63,7 @@
     let geomIntensity = 0.8;
     let geomExpr = "neutral";
 
+    // Colors de gradient segons emoció
     function getGradientForEmotion(emotion) {
       switch (emotion) {
         case 'happy':
@@ -74,6 +81,7 @@
       }
     }
 
+    // Dibuixa gradient vertical u horitzontal
     function setGradient(x, y, w, h, c1, c2, axis = 'y') {
       noFill();
       if (axis === 'y') {
@@ -175,6 +183,7 @@
       drawVideoPreview();
     }
 
+    // Dibuixa la cara geomètrica i els "pèls" laterals enfadats
     function drawGeometricFace(expr, inten) {
       let s = 320;
       let faceColor;
@@ -191,58 +200,20 @@
       rectMode(CENTER);
       rect(0,0,s,s,28);
 
-      // --------- Dos CUERNOS para Angry ---------
+      // <! Pelo izquierdo y derecho solo para "angry"
       if(expr === 'angry') {
-        // Cuerno izquierdo
-        let hornBaseLX = -s/4;
-        let hornBaseLY = -s/2 + 30;
-        let hornLAngle = -PI/6;
-        let hornLength = 58 + 50*inten;
-        let hornWidth = 28 + 18*inten;
-        fill(255,255,255);
-        stroke(200); strokeWeight(3);
-        beginShape();
-          vertex(
-            hornBaseLX + hornLength * sin(hornLAngle), 
-            hornBaseLY - hornLength * cos(hornLAngle)
-          ); // punta izquierda
-          vertex(hornBaseLX - hornWidth/2, hornBaseLY);
-          vertex(hornBaseLX + hornWidth/2, hornBaseLY);
-        endShape(CLOSE);
-        // Decoración línea interior izquierda
-        stroke(230,180,255,160);
-        strokeWeight(2);
-        line(
-          hornBaseLX, hornBaseLY,
-          hornBaseLX + (hornLength-10) * sin(hornLAngle), 
-          hornBaseLY - (hornLength-10) * cos(hornLAngle)
-        );
-        noStroke();
-
-        // Cuerno derecho
-        hornBaseLX = s/4;
-        hornLAngle = PI/6;
-        fill(255,255,255); stroke(200); strokeWeight(3);
-        beginShape();
-          vertex(
-            hornBaseLX + hornLength * sin(hornLAngle), 
-            hornBaseLY - hornLength * cos(hornLAngle)
-          ); // punta derecha
-          vertex(hornBaseLX - hornWidth/2, hornBaseLY);
-          vertex(hornBaseLX + hornWidth/2, hornBaseLY);
-        endShape(CLOSE);
-        // Decoración línea interior derecha
-        stroke(230,180,255,160);
-        strokeWeight(2);
-        line(
-          hornBaseLX, hornBaseLY,
-          hornBaseLX + (hornLength-10) * sin(hornLAngle), 
-          hornBaseLY - (hornLength-10) * cos(hornLAngle)
-        );
+        stroke(0);
+        strokeWeight(6 + 4*inten);
+        // Pelo izquierdo (las dos primeras son iniciales, las dos últimas finales)
+        // <!
+        line(-s/2 + 38, -s/2 + 22, -s/2 + 38 - 40, -s/2 + 22 - 50 - 60*inten);
+        // Pelo derecho (las dos primeras son iniciales, las dos últimas finales)
+        // <!
+        line(s/2 - 38, -s/2 + 22, s/2 - 38 + 40, -s/2 + 22 - 50 - 60*inten);
         noStroke();
       }
 
-      // ULLS (quadrats i negres, més oberts o tancats segons intensitat/expressió)
+      // Ojos geométricos
       fill(30);
       let eyeW = 44, eyeH = 44;
       if(expr==='happy'){ eyeH = 32 - 12*inten; }
@@ -265,10 +236,9 @@
         vertex(62-eyeW/2,-38+eyeH/2);
       endShape(CLOSE);
 
-      // CELLES (amb beginShape/endShape(CLOSE))
+      // Celles
       stroke(50,36,0); strokeWeight(9);
       noFill();
-      // Cella esquerra
       beginShape();
       if(expr==='happy') {
         vertex(-92, -68+6); 
@@ -302,7 +272,6 @@
         vertex(-32, -74);
       }
       endShape(CLOSE);
-      // Cella dreta
       beginShape();
       if(expr==='happy') {
         vertex(92, -68+6); 
@@ -337,7 +306,7 @@
       }
       endShape(CLOSE);
 
-      // GALTES (només happy)
+      // Galtes (només happy)
       if(expr==='happy') {
         noStroke();
         fill(255, 180, 180, 70 + 100*inten);
@@ -355,7 +324,7 @@
         endShape(CLOSE);
       }
 
-      // LLÀGRIMES (sad)
+      // Llàgrimes (només sad)
       if(expr==='sad' && inten > 0.25) {
         noStroke(); fill(100,170,255,130+80*inten);
         beginShape();
@@ -372,7 +341,7 @@
         endShape(CLOSE);
       }
 
-      // BOCA (amb beginShape/endShape(CLOSE))
+      // Boca
       stroke(30); strokeWeight(8+4*inten); noFill();
       beginShape();
       let mouthY = 86, mouthW = 120, mouthH = 38+40*inten;
@@ -394,18 +363,6 @@
         vertex(mouthW, mouthY+15-22*inten);
         vertex(mouthW, mouthY+37*inten);
         vertex(-mouthW, mouthY+37*inten);
-        // --- PÈLS ENFADATS ---
-        let hairCount = 7;
-        let hairBaseY = -s/2+8;
-        for(let i=0; i<hairCount; i++){
-          let x = map(i,0,hairCount-1,-s/2+28,s/2-28);
-          let l = 46 + 44*inten;
-          let angle = map(i,0,hairCount-1,-PI/5,PI/5);
-          let ex = x + l*sin(angle);
-          let ey = hairBaseY - l*cos(angle);
-          line(x, hairBaseY, ex, ey);
-        }
-        noStroke();
       } else if(expr==='surprised') {
         let ww = 60+70*inten, hh = 54+70*inten;
         vertex(-ww, mouthY+18-hh/2);
