@@ -1,39 +1,51 @@
 <!DOCTYPE html>
 <html lang="ca">
-<!--
-  Aquesta pàgina mostra una animació interactiva basada en "Gato y Pájaro" de Paul Klee (referència: imatge 1),
-  on el rostre del gat reacciona expressivament segons l'emoció detectada a la càmera (somriure, tristesa, sorpresa, ira, fàstic, por, etc.).
-  S'utilitza p5.js i ml5.js per a la detecció facial.
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gat Expressiu Klee - Art Facial Responsiu</title>
+  <title>Art Facial Responsiu - Transicions Suaus i Fons Dinàmic</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #222; }
     #loading-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(255,255,255,0.95);
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      font-family: Arial, sans-serif; z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      z-index: 1000;
     }
     .loader {
-      width: 40px; height: 40px;
-      border: 5px solid #3498db; border-top-color: transparent;
-      border-radius: 50%; animation: spin 1s linear infinite;
+      width: 40px;
+      height: 40px;
+      border: 5px solid #3498db;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #loading-screen p { margin-top: 15px; font-size: 1.1em; color: #333; }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    #loading-screen p {
+      margin-top: 15px;
+      font-size: 1.1em;
+      color: #333;
+    }
   </style>
 </head>
 <body>
-<!--
-  // Paul Klee: "Gato y Pájaro", animat expressivament segons l'emoció detectada.
-  // Els ulls, boca i bigotis del gat canvien subtilment segons somrius, t'enfades, etc.
-  // El quadrat i la composició segueixen el llenguatge geomètric original de l'obra.
--->
+  <!--
+    Aquesta obra geomètrica s'animarà per mostrar expressions (somriure, tristesa, etc.)
+    segons el model de codi facial interactiu.
+    Els cabells laterals només surten en "angry".
+  -->
   <div id="loading-screen">
     <div class="loader"></div>
     <p>Carregant models...</p>
@@ -48,41 +60,28 @@
     let currentGradientStart, currentGradientEnd;
     let targetGradientStart, targetGradientEnd;
 
-    // Paleta inspirada en l'obra de Klee
-    const PALETTE = {
-      base: [230,200,130], // fons cremós
-      orange: [216, 131, 40],
-      ochre: [210, 140, 55],
-      red:   [222, 47, 57],
-      rose:  [241, 125, 157],
-      light: [252, 227, 181],
-      shadow: [110, 60, 30],
-      eyeWhite: [250, 245, 220],
-      eyeGreen: [53, 128, 96],
-      nose: [220, 73, 80],
-      whisker: [100, 80, 70]
-    };
+    let geomIntensity = 0.8;
+    let geomExpr = "neutral";
 
-    // Gradient de fons segons emoció
+    // Colors de gradient segons emoció
     function getGradientForEmotion(emotion) {
       switch (emotion) {
         case 'happy':
-          return { start: color(252,227,181), end: color(255, 183, 77) };
+          return { start: color(255, 223, 186), end: color(255, 183, 77) };
         case 'sad':
-          return { start: color(173, 216, 230), end: color(130, 142, 186) };
+          return { start: color(173, 216, 230), end: color(100, 149, 237) };
         case 'angry':
-          return { start: color(255, 160, 122), end: color(180, 60, 30) };
+          return { start: color(255, 160, 122), end: color(255, 69, 0) };
         case 'disgusted':
-          return { start: color(189, 210, 156), end: color(153, 180, 90) };
+          return { start: color(144, 238, 144), end: color(34, 139, 34) };
         case 'surprised':
-          return { start: color(255, 240, 210), end: color(205, 155, 205) };
-        case 'fearful':
-          return { start: color(240, 225, 200), end: color(100, 100, 150) };
+          return { start: color(216, 191, 216), end: color(147, 112, 219) };
         default:
-          return { start: color(230,200,130), end: color(210,140,55) };
+          return { start: color(240, 240, 240), end: color(200, 200, 200) };
       }
     }
 
+    // Dibuixa gradient vertical u horitzontal
     function setGradient(x, y, w, h, c1, c2, axis = 'y') {
       noFill();
       if (axis === 'y') {
@@ -160,10 +159,12 @@
       let grad = getGradientForEmotion(currentExpression.dominant);
       targetGradientStart = grad.start;
       targetGradientEnd = grad.end;
+      geomExpr = currentExpression.dominant;
+      geomIntensity = currentExpression.intensity;
     }
 
     function scaleFactor() {
-      return Math.min(width, height) / 800;
+      return Math.min(width, height) / 400;
     }
 
     function draw() {
@@ -176,178 +177,212 @@
       push();
       translate(width / 2, height / 2);
       scale(scaleFactor());
-      drawKleeCatFace(currentExpression.dominant, smoothIntensity);
+      drawGeometricFace(geomExpr, smoothIntensity);
       pop();
       drawHUD();
       drawVideoPreview();
     }
 
-    // Dibuixa el rostre del gat segons Klee, animant expressivament
-    function drawKleeCatFace(expr, inten) {
-      let s = 650;
-      let eyeW = 210, eyeH = 75;
-      let eyeY = -80;
-      let eyeOpen = 1.0, eyeTilt = 0;
-      let mouthUp = 0, mouthDown = 0, mouthSmile = 0, mouthFrown = 0, mouthWide = 0;
-      let noseY = 90, noseH = 58;
-      let whiskerSpread = 1.0;
-      let birdColor = PALETTE.rose;
-
-      // Modifica segons emoció
-      if(expr === 'happy') {
-        eyeOpen = 1.14 + 0.16*inten;
-        mouthSmile = 1*inten;
-        mouthUp = 10*inten;
-        whiskerSpread = 1.13 + 0.10*inten;
-        birdColor = [255, 100, 180];
-      } else if(expr === 'sad') {
-        eyeOpen = 0.82 - 0.22*inten;
-        mouthFrown = 1*inten;
-        mouthDown = 18*inten;
-        whiskerSpread = 0.95 - 0.10*inten;
-        noseY += 10*inten;
-        birdColor = [190, 170, 230];
-      } else if(expr === 'angry') {
-        eyeTilt = -0.18*PI*inten;
-        eyeOpen = 0.96 - 0.08*inten;
-        mouthDown = 5*inten;
-        whiskerSpread = 1.05 + 0.10*inten;
-        birdColor = [200, 60, 60];
-      } else if(expr === 'disgusted') {
-        eyeTilt = 0.09*PI*inten;
-        eyeOpen = 0.87 - 0.12*inten;
-        mouthFrown = 0.4*inten;
-        mouthSmile = 0.2*inten;
-        whiskerSpread = 1.05;
-        birdColor = [120, 200, 130];
-      } else if(expr === 'surprised') {
-        eyeOpen = 1.5 + 0.33*inten;
-        mouthWide = 1*inten;
-        mouthUp = 12*inten;
-        whiskerSpread = 1.18 + 0.09*inten;
-        birdColor = [255, 180, 230];
-      } else if(expr === 'fearful') {
-        eyeOpen = 1.33 + 0.22*inten;
-        mouthWide = 0.8*inten;
-        mouthDown = 18*inten;
-        whiskerSpread = 1.03 - 0.04*inten;
-        birdColor = [210, 210, 250];
-      } else { // neutral
-        eyeOpen = 1.06;
-        whiskerSpread = 1.09;
+    // Dibuixa la cara geomètrica i els "pèls" laterals enfadats
+    function drawGeometricFace(expr, inten) {
+      let s = 320;
+      let faceColor;
+      switch(expr) {
+        case 'happy': faceColor = color(255, 230, 180); break;
+        case 'sad': faceColor = color(180, 200, 255); break;
+        case 'angry': faceColor = color(255, 130, 110); break;
+        case 'disgusted': faceColor = color(200, 240, 180); break;
+        case 'surprised': faceColor = color(220, 210, 255); break;
+        default: faceColor = color(230,230,230);
       }
-
-      // FONS GAT
       noStroke();
-      fill(...PALETTE.base, 240);
+      fill(faceColor);
       rectMode(CENTER);
-      rect(0,0,s,s,68);
+      rect(0,0,s,s,28);
 
-      // Ombres taronja (simples)
-      fill(...PALETTE.orange,43); rect(-s/4,0,s/2, s*0.7, 60);
-      fill(...PALETTE.ochre,34); rect(s/4,s/6,s*0.38, s*0.43, 30);
-
-      // ULLS (geomètrics, animats)
-      push();
-      for(let i=-1;i<=1;i+=2) {
-        push();
-        translate(i*180, eyeY);
-        rotate(i*eyeTilt);
-        fill(...PALETTE.eyeWhite);
-        stroke(80,60,40,60); strokeWeight(3);
-        beginShape();
-        for(let a=PI*0.18;a<PI*0.82;a+=0.05){
-          let ex = cos(a)*eyeW/2, ey = sin(a)*eyeH/2*eyeOpen;
-          vertex(ex,ey);
-        }
-        for(let a=PI*0.82;a>PI*0.18;a-=0.05){
-          let ex = cos(a)*eyeW/2, ey = -sin(a)*eyeH/2*eyeOpen;
-          vertex(ex,ey);
-        }
-        endShape(CLOSE);
-
-        // PUPILA VERTICAL
+      // <! Pelo izquierdo y derecho solo para "angry"
+      if(expr === 'angry') {
+        stroke(0);
+        strokeWeight(6 + 4*inten);
+        // Pelo izquierdo (las dos primeras son iniciales, las dos últimas finales)
+        // <!
+        line(-s/2 + 38, -s/2 + 22, -s/2 + 38 - 40, -s/2 + 22 - 50 - 60*inten);
+        // Pelo derecho (las dos primeras son iniciales, las dos últimas finales)
+        // <!
+        line(s/2 - 38, -s/2 + 22, s/2 - 38 + 40, -s/2 + 22 - 50 - 60*inten);
         noStroke();
-        fill(...PALETTE.eyeGreen,190);
-        beginShape();
-        for(let a=0;a<TWO_PI;a+=0.06){
-          let ex = cos(a)*19, ey = sin(a)*eyeH/2.4*eyeOpen;
-          vertex(ex,ey);
-        }
-        endShape(CLOSE);
-        fill(20,70,20,170);
-        beginShape();
-        vertex(-8,-eyeH/2.7); vertex(0,-eyeH/1.5); vertex(8,-eyeH/2.7);
-        vertex(12,eyeH/2.7); vertex(0,eyeH/1.09); vertex(-12,eyeH/2.7);
-        endShape(CLOSE);
-        pop();
       }
-      pop();
 
-      // PÀJARO (animació simple color/posició)
-      push();
-      let birdY = -eyeH*1.6 + map(inten,0,1,-8,10);
-      fill(...birdColor, 165);
-      stroke(140,50,90,70);
-      strokeWeight(2+6*inten);
+      // Ojos geométricos
+      fill(30);
+      let eyeW = 44, eyeH = 44;
+      if(expr==='happy'){ eyeH = 32 - 12*inten; }
+      if(expr==='sad'){ eyeH = 24 + 20*(1-inten); }
+      if(expr==='surprised'){ eyeW = 54 + 26*inten; eyeH = 54 + 26*inten; }
+      if(expr==='angry'){ eyeH = 28 - 10*inten; }
+      if(expr==='disgusted'){ eyeH = 32 - 16*inten; }
+      // Ull esquerre
       beginShape();
-        vertex(-30, birdY-12);
-        bezierVertex(-1, birdY-33, 38, birdY-19, 40, birdY+24);
-        vertex(15, birdY+23);
-        bezierVertex(2, birdY+37, -18, birdY+21, -30, birdY-12);
+        vertex(-62-eyeW/2,-38-eyeH/2);
+        vertex(-62+eyeW/2,-38-eyeH/2);
+        vertex(-62+eyeW/2,-38+eyeH/2);
+        vertex(-62-eyeW/2,-38+eyeH/2);
       endShape(CLOSE);
-      // cap i bec
-      fill(...birdColor, 220);
-      ellipse(37, birdY+8, 23,19);
-      fill(220,180,90,180);
-      triangle(48, birdY+8, 63, birdY+2, 48, birdY+12);
-      strokeWeight(2);
-      fill(40,0,0,220);
-      ellipse(42, birdY+7, 4,4);
-      pop();
-
-      // NAS (vermell, estilitzat)
-      fill(...PALETTE.nose);
-      stroke(200,60,70,90);
-      strokeWeight(6);
+      // Ull dret
       beginShape();
-        vertex(-18, noseY);
-        bezierVertex(-6, noseY+noseH/2, 6, noseY+noseH/2, 18, noseY);
-        vertex(0, noseY-8);
+        vertex(62-eyeW/2,-38-eyeH/2);
+        vertex(62+eyeW/2,-38-eyeH/2);
+        vertex(62+eyeW/2,-38+eyeH/2);
+        vertex(62-eyeW/2,-38+eyeH/2);
       endShape(CLOSE);
 
-      // BOCA (varia per expressió)
+      // Celles
+      stroke(50,36,0); strokeWeight(9);
       noFill();
-      stroke(130,50,60, 230);
-      strokeWeight(8);
       beginShape();
-        vertex(-45, noseY+30);
-        if (mouthSmile > 0.05) {
-          bezierVertex(-18, noseY+60, 18, noseY+60, 45, noseY+30);
-          bezierVertex(10, noseY+75, -10, noseY+75, -45, noseY+30);
-        } else if (mouthFrown > 0.05) {
-          bezierVertex(-18, noseY+85, 18, noseY+85, 45, noseY+30);
-          bezierVertex(0, noseY+135, 0, noseY+135, -45, noseY+30);
-        } else if (mouthWide > 0.05) {
-          bezierVertex(-18, noseY+88, 18, noseY+88, 45, noseY+30);
-          bezierVertex(20, noseY+110, -20, noseY+110, -45, noseY+30);
-        } else {
-          bezierVertex(-18, noseY+75, 18, noseY+75, 45, noseY+30);
-        }
-      endShape();
-
-      // BIGOTIS ("whiskers") animats
-      stroke(...PALETTE.whisker, 100);
-      strokeWeight(5);
-      for(let i=-1;i<=1;i+=2) {
-        let wx = i*70, wy = noseY+38;
-        line(wx, wy, wx + i*150*whiskerSpread, wy-16);
-        line(wx, wy+18, wx + i*158*whiskerSpread, wy+18+14);
-        line(wx, wy-10, wx + i*138*whiskerSpread, wy-36);
+      if(expr==='happy') {
+        vertex(-92, -68+6); 
+        vertex(-82, -76-25*inten);
+        vertex(-42, -76-25*inten);
+        vertex(-32, -68+6);
+      } else if(expr==='sad') {
+        vertex(-92, -74-12+20*inten);
+        vertex(-82, -56);
+        vertex(-42, -56);
+        vertex(-32, -86+20*inten);
+      } else if(expr==='angry') {
+        vertex(-92, -92-26*inten);
+        vertex(-82, -62);
+        vertex(-42, -62);
+        vertex(-32, -92-26*inten);
+      } else if(expr==='surprised') {
+        vertex(-92, -86-22*inten);
+        vertex(-82, -86-22*inten);
+        vertex(-42, -86-22*inten);
+        vertex(-32, -86-22*inten);
+      } else if(expr==='disgusted') {
+        vertex(-92, -64+26*inten);
+        vertex(-82, -62);
+        vertex(-42, -62);
+        vertex(-32, -64+26*inten);
+      } else {
+        vertex(-92, -74);
+        vertex(-82, -74);
+        vertex(-42, -74);
+        vertex(-32, -74);
       }
+      endShape(CLOSE);
+      beginShape();
+      if(expr==='happy') {
+        vertex(92, -68+6); 
+        vertex(82, -76-25*inten);
+        vertex(42, -76-25*inten);
+        vertex(32, -68+6);
+      } else if(expr==='sad') {
+        vertex(92, -74-12+20*inten);
+        vertex(82, -56);
+        vertex(42, -56);
+        vertex(32, -74-12+20*inten);
+      } else if(expr==='angry') {
+        vertex(92, -92-26*inten);
+        vertex(82, -62);
+        vertex(42, -62);
+        vertex(32, -92-26*inten);
+      } else if(expr==='surprised') {
+        vertex(92, -86-22*inten);
+        vertex(82, -86-22*inten);
+        vertex(42, -86-22*inten);
+        vertex(32, -86-22*inten);
+      } else if(expr==='disgusted') {
+        vertex(92, -64+26*inten);
+        vertex(82, -62);
+        vertex(42, -62);
+        vertex(32, -64+26*inten);
+      } else {
+        vertex(92, -74);
+        vertex(82, -74);
+        vertex(42, -74);
+        vertex(32, -74);
+      }
+      endShape(CLOSE);
+
+      // Galtes (només happy)
+      if(expr==='happy') {
+        noStroke();
+        fill(255, 180, 180, 70 + 100*inten);
+        beginShape();
+          vertex(-110, 40+8*inten);
+          vertex(-80, 50+14*inten);
+          vertex(-80, 70+10*inten);
+          vertex(-110, 60+12*inten);
+        endShape(CLOSE);
+        beginShape();
+          vertex(110, 40+8*inten);
+          vertex(80, 50+14*inten);
+          vertex(80, 70+10*inten);
+          vertex(110, 60+12*inten);
+        endShape(CLOSE);
+      }
+
+      // Llàgrimes (només sad)
+      if(expr==='sad' && inten > 0.25) {
+        noStroke(); fill(100,170,255,130+80*inten);
+        beginShape();
+          vertex(-62-7,0+16*inten-13);
+          vertex(-62+7,0+16*inten-13);
+          vertex(-62+12,0+16*inten+13);
+          vertex(-62-12,0+16*inten+13);
+        endShape(CLOSE);
+        beginShape();
+          vertex(62-7,0+16*inten-13);
+          vertex(62+7,0+16*inten-13);
+          vertex(62+12,0+16*inten+13);
+          vertex(62-12,0+16*inten+13);
+        endShape(CLOSE);
+      }
+
+      // Boca
+      stroke(30); strokeWeight(8+4*inten); noFill();
+      beginShape();
+      let mouthY = 86, mouthW = 120, mouthH = 38+40*inten;
+      if(expr==='happy') {
+        vertex(-mouthW, mouthY);
+        bezierVertex(-60, mouthY+mouthH, 60, mouthY+mouthH, mouthW, mouthY);
+        vertex(mouthW, mouthY+28*inten);
+        vertex(-mouthW, mouthY+28*inten);
+      } else if(expr==='sad') {
+        vertex(-mouthW, mouthY+mouthH);
+        bezierVertex(-60, mouthY, 60, mouthY, mouthW, mouthY+mouthH);
+        vertex(mouthW, mouthY+mouthH+28*inten);
+        vertex(-mouthW, mouthY+mouthH+28*inten);
+      } else if(expr==='angry') {
+        stroke(0);
+        strokeWeight(5);
+        vertex(-mouthW, mouthY+15-22*inten);
+        vertex(0, mouthY-30*inten);
+        vertex(mouthW, mouthY+15-22*inten);
+        vertex(mouthW, mouthY+37*inten);
+        vertex(-mouthW, mouthY+37*inten);
+      } else if(expr==='surprised') {
+        let ww = 60+70*inten, hh = 54+70*inten;
+        vertex(-ww, mouthY+18-hh/2);
+        vertex(ww, mouthY+18-hh/2);
+        vertex(ww, mouthY+18+hh/2);
+        vertex(-ww, mouthY+18+hh/2);
+      } else if(expr==='disgusted') {
+        vertex(-mouthW, mouthY+14*inten);
+        bezierVertex(-40, mouthY-20*inten, 40, mouthY+40*inten, mouthW, mouthY-10*inten);
+        vertex(mouthW, mouthY+18*inten);
+        vertex(-mouthW, mouthY+18*inten);
+      } else {
+        vertex(-mouthW, mouthY);
+        vertex(mouthW, mouthY);
+        vertex(mouthW, mouthY+18);
+        vertex(-mouthW, mouthY+18);
+      }
+      endShape(CLOSE);
     }
 
-    // HUD i previsualització vídeo
     function drawHUD() {
       const traduccions = {
         happy: "😃 Feliç",
