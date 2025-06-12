@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="ca">
 <!--
-  Gat Expressiu Klee - Boca abierta (O) en sorpresa y vómito pictórico mejorado en "disgusted".
+  Gat Expressiu Klee - Boca abierta (O) en sorpresa, vómito pictórico mejorado en "disgusted"
+  y ojos que cambian según la expresión/emoción.
 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gat Expressiu Klee - Boca abierta y vómito pictórico</title>
+  <title>Gat Expressiu Klee - Ojos según expresión</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
   <style>
@@ -163,6 +164,84 @@
       drawVideoPreview();
     }
 
+    // OJOS QUE CAMBIAN CON LA EXPRESIÓN
+    function drawKleeEyes(expr, inten) {
+      // Valores base
+      let eyeLen = 420, eyeHeight = 130, eyeY = -60, eyeDist = 179;
+      let irisW = 54, irisH = 110;
+      let irisColor = PALETTE.green;
+      let eyeTilt = 0;
+      let eyelidHeight = 0;
+      let pupilShift = 0;
+      let pupilW = 11, pupilH = irisH*0.92;
+
+      // Cambios según emoción
+      if(expr === "angry") {
+        eyeTilt = -0.15 * PI * (0.25 + inten);
+        eyeHeight = 77 - 23*inten; // ojo más fino
+        eyelidHeight = 45*inten;
+        pupilShift = -13*inten;
+        pupilW = 14; pupilH = irisH*0.8;
+      }
+      else if(expr === "sad") {
+        eyeTilt = 0.12 * PI * (0.15 + inten);
+        eyeHeight = 90 + 15*inten;
+        eyelidHeight = 0;
+        pupilShift = 14*inten;
+        pupilW = 10; pupilH = irisH*1.12;
+      }
+      else if(expr === "happy") {
+        eyeHeight = 70 - 32*inten; // ojo casi semicerrado
+        eyelidHeight = 60*inten;
+        pupilShift = -3*inten;
+        pupilW = 9; pupilH = irisH*0.7;
+      }
+      else if(expr === "surprised") {
+        eyeHeight = 170 + 80*inten;
+        eyelidHeight = -30*inten;
+        pupilShift = 0;
+        pupilW = 18+7*inten; pupilH = irisH*1.25;
+      }
+      else if(expr === "disgusted") {
+        eyeHeight = 80 + 5*inten;
+        eyelidHeight = 15*inten;
+        pupilShift = 10*inten;
+        pupilW = 11; pupilH = irisH*0.95;
+      }
+
+      for(let i=-1;i<=1;i+=2) {
+        push();
+        translate(i*eyeDist, eyeY);
+        rotate(i * eyeTilt);
+
+        // Fondo del ojo
+        fill(...PALETTE.eyeWhite, 255);
+        stroke(...PALETTE.eyeShadow, 110); strokeWeight(5);
+        beginShape();
+          vertex(-eyeLen/2, 0);
+          bezierVertex(-eyeLen/2+60, -eyeHeight*0.7, eyeLen/2-60, -eyeHeight*0.7, eyeLen/2, 0);
+          bezierVertex(eyeLen/2-40, eyeHeight*0.60, -eyeLen/2+40, eyeHeight*0.60, -eyeLen/2, 0);
+        endShape(CLOSE);
+
+        // Párpado superior (si happy/angry)
+        if(eyelidHeight > 0) {
+          noFill(); stroke(150,100,60,120); strokeWeight(16);
+          arc(0, -eyelidHeight*0.18, eyeLen*0.8, eyelidHeight, PI, 0);
+        }
+
+        // Iris vertical
+        noStroke();
+        fill(...irisColor, 222);
+        ellipse(0, pupilShift, irisW, irisH);
+        fill(0,120,60,140);
+        ellipse(0, pupilShift, pupilW, pupilH);
+        fill(255,255,255,80);
+        ellipse(-9, pupilShift-irisH*0.29, 12,32);
+
+        pop();
+      }
+    }
+
     // Dibuix fidel a Klee, boca O en sorpresa y vómito pictórico mejorado
     function drawKleeCatFace(expr, inten) {
       let s = 800;
@@ -172,45 +251,8 @@
       fill(...PALETTE.orange, 100); rect(-s/4, 0, s/2, s*0.67, 80);
       fill(...PALETTE.ochre, 60); rect(s/4, s/6, s*0.38, s*0.44, 60);
 
-      // -- Ulls allargats i apuntats --
-      let eyeLen = 420, eyeHeight = 130, eyeY = -60, eyeDist = 179;
-      let irisW = 54, irisH = 110;
-      let irisColor = PALETTE.green;
-      let eyeTilt = 0;
-      if(expr === "angry") eyeTilt = -0.10 * PI * (0.2 + inten);
-      if(expr === "sad") eyeTilt = 0.10 * PI * (0.3 + inten);
-      for(let i=-1;i<=1;i+=2) {
-        push();
-        translate(i*eyeDist, eyeY);
-        rotate(i * eyeTilt);
-        // Blanc de l'ull
-        fill(...PALETTE.eyeWhite, 255);
-        stroke(...PALETTE.eyeShadow, 110); strokeWeight(5);
-        beginShape();
-          vertex(-eyeLen/2, 0);
-          bezierVertex(-eyeLen/2+60, -eyeHeight*0.7, eyeLen/2-60, -eyeHeight*0.7, eyeLen/2, 0);
-          bezierVertex(eyeLen/2-40, eyeHeight*0.60, -eyeLen/2+40, eyeHeight*0.60, -eyeLen/2, 0);
-        endShape(CLOSE);
-        // Ombra inferior
-        noFill(); stroke(180,120,60,90); strokeWeight(18);
-        arc(0,16, eyeLen*0.82, 60, 0, PI);
-        // Iris vertical verd
-        fill(...irisColor, 222);
-        noStroke();
-        ellipse(0, 0, irisW, irisH);
-        fill(0,120,60,140); ellipse(0,0, 11, irisH*0.92);
-        fill(255,255,255,80); ellipse(-9,-irisH*0.29, 12,32);
-
-        // LLÀGRIMES sota els ulls si trist
-        if(expr === "sad" && inten > 0.18) {
-          fill(...PALETTE.tear, 120+115*inten);
-          noStroke();
-          ellipse(0, 65+30*inten, 24+28*inten, 38+72*inten);
-          fill(255,255,255,60+110*inten);
-          ellipse(0, 65+26*inten, 9+12*inten, 17+30*inten);
-        }
-        pop();
-      }
+      // -- OJOS SEGÚN EXPRESIÓN --
+      drawKleeEyes(expr, inten);
 
       // -- Nas triangular, separat de la boca --
       let noseY = 95, noseW = 70, noseH = 88;
