@@ -1,22 +1,9 @@
 <!DOCTYPE html>
 <html lang="ca">
-<!--
-  Gat i Ocell - Paul Klee (versió ultra-fidel, llarg, estructurat, +400 línies)
-  - Cara quadrada/ancha amb arestes arrodonides, NO circular.
-  - Ulls gegants, ametllats, pupil·la verda vertical, línia superior recta.
-  - Nariz de cor gran i difuminat.
-  - Boca negra fina i curvada avall.
-  - Bigotis curts, plans, des de la base del cor.
-  - Sense cejas.
-  - Ocell vermell sobre el nas.
-  - Fons pictòric amb taques.
-  - Modularitzat, preparat per emoció (ML5.js), però sempre fidel al quadre.
-  - Comentaris explicatius extensos a cada secció.
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gat i Ocell Klee FIDEL - Llarg i Modular</title>
+  <title>Gat i Ocell Klee - Art Facial Emocional FIDEL</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
   <style>
@@ -42,13 +29,17 @@
     <p>Carregant models...</p>
   </div>
   <script>
-    // === GLOBALS I PALETA PICTÒRICA ===
+    // ML5 globals and palette
     let faceapi, detections = [], video;
     let modelsReady = false;
     let currentExpression = { dominant: 'neutral', intensity: 0 };
     let smoothIntensity = 0;
 
-    // Paleta fidel a la imatge de Klee
+    // Dynamic background
+    let currentGradientStart, currentGradientEnd;
+    let targetGradientStart, targetGradientEnd;
+
+    // Palette inspired by Klee
     const PALETTE = {
       ochre: [224,185,124],
       orange: [220,122,40],
@@ -62,11 +53,47 @@
       birdWing: [200, 80, 110]
     };
 
-    // ========== SETUP & ML5 ==========
+    function getGradientForEmotion(emotion) {
+      switch (emotion) {
+        case 'happy':
+          return { start: color(255, 223, 186), end: color(255, 183, 77) };
+        case 'sad':
+          return { start: color(173, 216, 230), end: color(100, 149, 237) };
+        case 'angry':
+          return { start: color(255, 160, 122), end: color(255, 69, 0) };
+        case 'disgusted':
+          return { start: color(144, 238, 144), end: color(34, 139, 34) };
+        case 'surprised':
+          return { start: color(216, 191, 216), end: color(147, 112, 219) };
+        default:
+          return { start: color(240, 240, 240), end: color(200, 200, 200) };
+      }
+    }
+
+    function setGradient(x, y, w, h, c1, c2, axis = 'y') {
+      noFill();
+      if (axis === 'y') {
+        for (let i = y; i <= y + h; i++) {
+          let inter = map(i, y, y + h, 0, 1);
+          let c = lerpColor(c1, c2, inter);
+          stroke(c);
+          line(x, i, x + w, i);
+        }
+      } else if (axis === 'x') {
+        for (let i = x; i <= x + w; i++) {
+          let inter = map(i, x, x + w, 0, 1);
+          let c = lerpColor(c1, c2, inter);
+          stroke(c);
+          line(i, y, i, y + h);
+        }
+      }
+    }
 
     function setup() {
       createCanvas(windowWidth, windowHeight);
-      pixelDensity(1.5);
+      let neutralGrad = getGradientForEmotion('neutral');
+      currentGradientStart = neutralGrad.start;
+      currentGradientEnd = neutralGrad.end;
       video = createCapture(VIDEO);
       video.size(320, 240);
       video.hide();
@@ -82,6 +109,7 @@
 
     function windowResized() {
       resizeCanvas(windowWidth, windowHeight);
+      video.size(max(160, width / 4), max(120, height / 4));
     }
 
     function gotResults(err, results) {
@@ -105,44 +133,29 @@
           maxIntensity = expr[dominant];
         }
       });
+      let grad = getGradientForEmotion(currentExpression.dominant);
+      targetGradientStart = grad.start;
+      targetGradientEnd = grad.end;
     }
 
-    // ========== DRAW PRINCIPAL ==========
-
     function draw() {
-      smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.12);
-      drawKleeBackground();
+      smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.1);
+      if (targetGradientStart && targetGradientEnd) {
+        currentGradientStart = lerpColor(currentGradientStart, targetGradientStart, 0.1);
+        currentGradientEnd = lerpColor(currentGradientEnd, targetGradientEnd, 0.1);
+      }
+      setGradient(0, 0, width, height, currentGradientStart, currentGradientEnd, 'y');
       push();
       translate(width / 2, height / 2 + 10);
       scale(min(width, height) / 900);
-      drawKleeCatFidel(currentExpression.dominant, smoothIntensity);
+      drawKleeCatFace(currentExpression.dominant, smoothIntensity);
       pop();
       drawHUD();
       drawVideoPreview();
     }
 
-    // ========== FONS PICTÒRIC (degradat + taques difuses) ==========
-
-    function drawKleeBackground() {
-      // Degradat pictòric base
-      for(let y=0; y<height; y+=2){
-        let c = lerpColor(color(237, 186, 120), color(220,122,40), y/height);
-        fill(redNoise(c.levels[0],y), redNoise(c.levels[1],y), redNoise(c.levels[2],y), 230);
-        rect(0, y, width, 2);
-      }
-      // Taques pictòriques inspirades en el quadre, per donar textura
-      fill(220,120,60,18); ellipse(width*0.18,height*0.55,230,250);
-      fill(255,140,120,16); ellipse(width*0.72,height*0.22,250,145);
-      fill(240,180,110,12); ellipse(width*0.68,height*0.8,300,120);
-      // Ombres laterals (suau)
-      fill(220,122,60,12); ellipse(width*0.08,height*0.7,220,320);
-      fill(220,122,60,12); ellipse(width*0.93,height*0.3,150,130);
-    }
-    function redNoise(val, y) { return val + noise(y/170.0)*16-8; }
-
-    // ========== MODULARITAT: PARTS DEL GAT ==========
-
-    function drawKleeCatFidel(expr, inten) {
+    // --- CAT FACE FIEL AL CUADRO DE KLEE ---
+    function drawKleeCatFace(expr, inten) {
       drawKleeFaceBase();
       drawKleeEyes();
       drawKleeBird();
@@ -152,94 +165,86 @@
       drawKleeExtraDetails();
     }
 
-    // CAP/BASE: Quadrada, gran, arestes arrodonides
     function drawKleeFaceBase() {
       rectMode(CENTER);
       noStroke();
       fill(...PALETTE.ochre, 238);
-
-      // Cara quadrada, "cheeks" amples, cantonades molt arrodonides
       rect(0, 60, 690, 540, 120, 120, 180, 180);
-
-      // Ombres pictòriques per més textura quadre
       fill(210,130,60,22); ellipse(-180,120,190,110);
       fill(210,130,60,15); ellipse(200,180,270,120);
       fill(180,90,23,8); ellipse(0,130,590,140);
     }
 
-    // ULLS FIDELS A KLEE (quasi a la vora, molt grans)
+    // --- OJOS FIJOS, ALMENDRADOS, DENTRO DE LA CARA ---
     function drawKleeEyes() {
-      let eyeY = -45, eyeLen = 460, eyeTall = 140;
+      let eyeY = -30, eyeLen = 350, eyeTall = 98;
+      let offsetX = 187;
       for(let i=-1;i<=1;i+=2) {
-        // Posició molt separada, quasi tocant la vora del "quadrat"
-        let eyeX = i*285;
+        let eyeX = i*offsetX;
         push();
         translate(eyeX, eyeY);
-
-        // Forma almendrada: línia superior recta, inferior corba
-        fill(250,236,200,210);
-        stroke(42,30,16, 120); strokeWeight(10);
+        fill(250,236,200,215);
+        stroke(42,30,16, 120); strokeWeight(8);
         beginShape();
         vertex(-eyeLen/2, 0);
         vertex(eyeLen/2, 0);
-        bezierVertex(eyeLen/2, eyeTall/2, -eyeLen/2, eyeTall/2, -eyeLen/2, 0);
+        bezierVertex(eyeLen/2, eyeTall/1.85, -eyeLen/2, eyeTall/1.85, -eyeLen/2, 0);
         endShape(CLOSE);
 
-        // Pupila verda vertical (desplaçada cap al nas)
+        // Pupila verda vertical, centrada (ligeramente hacia dentro)
         fill(...PALETTE.greenEye, 220); noStroke();
-        ellipse(-40*i,eyeTall*0.13,41,eyeTall*0.93);
+        ellipse(-12*i,eyeTall*0.18,32,eyeTall*0.9);
         fill(...PALETTE.greenDeep,230);
-        ellipse(-40*i,eyeTall*0.13,17,eyeTall*0.93);
+        ellipse(-12*i,eyeTall*0.18,10,eyeTall*0.9);
 
         // Difuminat pictòric interior
         for(let k=0;k<10;k++){
-          fill(90,80,30,6);
-          ellipse(-40*i,eyeTall/6,eyeLen*0.7-k*10,eyeTall*0.5-k*4);
+          fill(90,80,30,7);
+          ellipse(-12*i,eyeTall/6,eyeLen*0.64-k*12,eyeTall*0.36-k*4);
         }
         pop();
       }
     }
 
-    // OCELL PICTÒRIC ENTRE ELS ULLS
+    // --- PAJARO ROSA CENTRAL: MUY GRANDE Y VISIBLE ---
     function drawKleeBird() {
-      let x = 0, y = -110, w = 120, h = 53;
+      let x = 0, y = -65, w = 350, h = 175;
       push();
       translate(x, y);
       scale(w/90, h/50);
 
-      // Cos de l’ocell
-      fill(...PALETTE.birdRed, 170); stroke(...PALETTE.birdWing, 170); strokeWeight(5.2);
+      // Cuerpo grande
+      fill(...PALETTE.birdRed, 200); stroke(...PALETTE.birdWing, 170); strokeWeight(16);
       beginShape();
-      vertex(-14,-5);
-      bezierVertex(9,-27,36,-7,29,19);
-      bezierVertex(12,27,-18,22,-14,-5);
+      vertex(-22,-7);
+      bezierVertex(33,-90,110,-19,78,52);
+      bezierVertex(36,120,-40,65,-22,-7);
       endShape(CLOSE);
 
-      // Ala
-      fill(...PALETTE.birdWing,170); noStroke();
+      // Ala amplia
+      fill(...PALETTE.birdWing,120); noStroke();
       beginShape();
-      vertex(5,9); bezierVertex(19,3,17,17,6,18); endShape(CLOSE);
+      vertex(20,35); bezierVertex(105,10,74,102,22,78); endShape(CLOSE);
 
-      // Cap
-      fill(...PALETTE.birdRed, 210);
-      ellipse(21,-7,18,16);
+      // Cabeza
+      fill(...PALETTE.birdRed, 235);
+      ellipse(65,-21,48,38);
 
       // Pico
-      fill(230,200,90,170); triangle(37,-5,41,1,29,-1);
+      fill(230,200,90,220); triangle(118,-16,142,12,90,-7);
 
-      // Ull
-      fill(40,0,0,200); ellipse(27,-9,2.4,2.4);
+      // Ojo
+      fill(40,0,0,210); ellipse(85,-26,9,9);
+
       pop();
     }
 
-    // NAS DE COR GRAN, DIFUMINAT
+    // --- NARIZ DE COR ---
     function drawKleeNose() {
       let x = 0, y = 120, w = 90, h = 82;
       push();
       translate(x, y);
       scale(w/100, h/100);
-
-      // Difuminat pictòric vermell
       for(let i=0;i<22;i++){
         fill(210,37,57,13);
         beginShape();
@@ -248,7 +253,6 @@
         bezierVertex(-50+random(-3,3), 60+random(-3,3), -50+random(-3,3), -40+random(-3,3), 0, 20+random(-2,2));
         endShape(CLOSE);
       }
-      // Cor central
       fill(210,37,57,220);
       beginShape();
       vertex(0, 20);
@@ -258,14 +262,18 @@
       pop();
     }
 
-    // BOCA i "M" SUAU: posició baixa, corba lleu avall
+    // --- BOCA Y "M" SEGÚN EMOCIÓN ---
     function drawKleeMouth(expr, inten) {
-      // Boca principal
+      let mouthY = 245, mouthW = 72;
+      let smileOffset = 0;
+      if(expr==="happy") smileOffset = 36*inten;
+      if(expr==="sad") smileOffset = -28*inten;
+      if(expr==="angry") smileOffset = -12*inten;
       stroke(...PALETTE.black, 170); strokeWeight(7.5);
       noFill();
       beginShape();
-      vertex(-72, 245);
-      bezierVertex(-12, 285, 12, 285, 72, 245);
+      vertex(-mouthW, mouthY);
+      bezierVertex(-12, 285+smileOffset, 12, 285+smileOffset, mouthW, mouthY);
       endShape();
 
       // "M" suau sota el nas
@@ -279,9 +287,8 @@
       endShape();
     }
 
-    // BIGOTIS: CURTS, RECTES, BASE DEL COR
+    // --- BIGOTES ---
     function drawKleeWhiskers() {
-      // Són rectes, plans, surten de la base del cor (lateral nas)
       let whiskerBaseY = 185;
       for(let side of [-1,1]) for(let w=0;w<3;w++){
         let y0=whiskerBaseY+w*13, y1=whiskerBaseY-2+w*7, spread=270+40*w;
@@ -290,17 +297,14 @@
       }
     }
 
-    // Detalls addicionals pictòrics, per textura extra
+    // --- DETALLES PICTÓRICOS EXTRA ---
     function drawKleeExtraDetails() {
-      // Ombra sota la boca
       fill(160,80,50,13); ellipse(0, 325, 180, 25);
-      // Ombra a la galta esquerra
       fill(160,80,50,8); ellipse(-260, 170, 90, 120);
-      // Taca vermella suau
       fill(210,37,57,7); ellipse(0,180,350,60);
     }
 
-    // ========== HUD i vídeo ==========
+    // --- HUD Y VÍDEO ---
     function drawHUD() {
       const traduccions = {
         happy: "😄 Feliç",
@@ -330,7 +334,7 @@
       );
     }
 
-    // ========== Favicon i seguretat ==========
+    // Favicon y seguridad
     let link = document.createElement('link');
     link.rel = 'icon';
     link.type = 'image/png';
@@ -346,13 +350,6 @@
           </p>
         `;
       });
-
-    // ========== LÍNIA EXTRA PER ARRIBAR A +400 ==========
-    // (Comentari d'estil: aquest arxiu és fidel al quadre de Klee, cara quadrada i tot modularitzat!)
-    // Si vols animar més coses, afegeix canvis de color amb l'expressió, canvia la curvatura de la boca, o fes vibrar el nas!
-    // Això t'ho puc afegir sense perdre la fidelitat pictòrica.
-    // Fes una ullada als paràmetres de cada funció per ajustar detalls!
-    // (Línia 420)
   </script>
 </body>
 </html>
