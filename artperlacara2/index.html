@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="ca">
 <!--
-  Animació interactiva inspirada en "Gato y Pájaro" de Paul Klee.
-  Expressivitat realista: angry = ulls estirats, boca recta; neutral = boca recta; sad = llàgrimes; disgusted = boca asimètrica, nas arrugat, ulls semicerrats, celles arquejades i una taca/esquena verda.
+  Gat "Klee Emotiu" - Per fer plorar de joia a qualsevol profe!
+  Boca i ulls pictòrics ÚNICS per cada emoció, paleta viva i expressivitat màxima.
+  Comentaris // i <! per personalitzar. 
 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gat Expressiu Klee - Art Facial Realista</title>
+  <title>Gat Emotiu Klee - Plora de joia!</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
   <style>
-    body { margin: 0; padding: 0; overflow: hidden; background: #222; }
+    body { margin: 0; padding: 0; overflow: hidden; background: #222;}
     #loading-screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(255,255,255,0.95);
@@ -41,6 +42,7 @@
     let currentGradientStart, currentGradientEnd;
     let targetGradientStart, targetGradientEnd;
 
+    // <! Paleta pictòrica inspirada en Klee
     const PALETTE = {
       base: [224,196,124],
       orange: [216, 131, 40],
@@ -53,23 +55,24 @@
       eyeGreen: [78, 143, 94],
       nose: [220, 73, 80],
       whisker: [96, 80, 70],
-      disgustGreen: [128, 222, 132]
+      disgustGreen: [128, 222, 132],
+      tearBlue: [120,170,255]
     };
 
     function getGradientForEmotion(emotion) {
       switch (emotion) {
         case 'happy':
-          return { start: color(252,227,181), end: color(255, 183, 77) };
+          return { start: color(255, 228, 181), end: color(255, 183, 107) };
         case 'sad':
-          return { start: color(178, 210, 230), end: color(120, 160, 210) };
+          return { start: color(178, 210, 250), end: color(120, 160, 210) };
         case 'angry':
-          return { start: color(255, 160, 122), end: color(170, 60, 30) };
+          return { start: color(255, 160, 122), end: color(180, 60, 40) };
         case 'disgusted':
           return { start: color(189, 210, 156), end: color(153, 180, 90) };
         case 'surprised':
           return { start: color(255, 240, 210), end: color(205, 155, 205) };
         case 'fearful':
-          return { start: color(240, 225, 200), end: color(110, 120, 140) };
+          return { start: color(245, 235, 230), end: color(110, 120, 140) };
         default:
           return { start: color(224,196,124), end: color(210,140,55) };
       }
@@ -145,10 +148,10 @@
     }
 
     function draw() {
-      smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.12);
+      smoothIntensity = lerp(smoothIntensity, currentExpression.intensity, 0.15);
       if (targetGradientStart && targetGradientEnd) {
-        currentGradientStart = lerpColor(currentGradientStart, targetGradientStart, 0.10);
-        currentGradientEnd = lerpColor(currentGradientEnd, targetGradientEnd, 0.10);
+        currentGradientStart = lerpColor(currentGradientStart, targetGradientStart, 0.12);
+        currentGradientEnd = lerpColor(currentGradientEnd, targetGradientEnd, 0.12);
       }
       setGradient(0, 0, width, height, currentGradientStart, currentGradientEnd, 'y');
       push();
@@ -161,237 +164,199 @@
     }
 
     function drawKleeCatFace(expr, inten) {
-      // Paràmetres base
-      let s = 650, eyeW = 210, eyeH = 75, eyeY = -80;
-      let eyeOpen = 1.0, eyeTilt = 0, eyeIrisW = 38, eyeIrisH = 54, eyeIrisColor = PALETTE.eyeGreen;
-      let mouthYmod = 0, mouthOpen = 0, mouthColor = [130,50,60,225];
-      let browLift = 0, browTilt = 0, browSad = 0, browAngry = 0, browDisgust = 0;
+      // <! Paràmetres pictòrics base
+      let s = 650, eyeY = -80, mouthColor = [130,50,60,225], whiskerSpread = 1.0;
       let noseY = 90, noseH = 57, noseW = 38, noseCol = PALETTE.nose;
-      let whiskerSpread = 1.0;
-      let faceRedness = 0;
-      let birdColor = PALETTE.rose;
-      let disgustGreen = PALETTE.disgustGreen;
 
-      // Ajustos segons emoció
-      if(expr === 'happy') {
-        eyeOpen = 1.18 + 0.18*inten;
-        browLift = 12*inten; browTilt = 11*inten;
-        mouthYmod = -16*inten; mouthOpen = 15*inten;
-        whiskerSpread = 1.20 + 0.09*inten;
-        noseCol = [255, 120, 120];
-        eyeIrisW = 46; eyeIrisColor = [98, 180, 94];
-        faceRedness = 12*inten;
-        birdColor = [255, 100, 180];
-        mouthColor = [180,80,90,235];
-      } else if(expr === 'sad') {
-        eyeOpen = 0.82 - 0.22*inten;
-        browSad = 18*inten;
-        mouthYmod = 18*inten; mouthOpen = 10*inten;
-        whiskerSpread = 0.93 - 0.08*inten;
-        noseCol = [190, 90, 110];
-        eyeIrisW = 36;
-        birdColor = [190, 170, 230];
-        mouthColor = [100,90,120,220];
-      } else if(expr === 'angry') {
-        eyeOpen = 0.33 + 0.07*(1-inten); // ulls molt tancats
-        eyeIrisH = 18; eyeIrisW = 17;
-        eyeTilt = -0.34*PI*inten; browAngry = 37*inten;
-        browLift = -30*inten;
-        mouthYmod = 9*inten; mouthOpen = 2*inten;
-        whiskerSpread = 1.14 + 0.14*inten;
-        noseCol = [255, 60, 60];
-        faceRedness = 85*inten;
-        birdColor = [200, 60, 60];
-        mouthColor = [85,20,25,245];
-      } else if(expr === 'disgusted') {
-        // Disgustat: boca asimètrica, celles arquejades, nas arrugat, taca verda, ulls semicerrats i una mica rodons
-        eyeOpen = 0.61 - 0.13*inten;
-        eyeTilt = 0.17*PI*inten;
-        mouthYmod = 6*inten; mouthOpen = 7*inten;
-        whiskerSpread = 1.01;
-        noseCol = [150, 210, 90];
-        eyeIrisColor = [108, 174, 90];
-        browDisgust = 23*inten;
-        birdColor = [120, 200, 130];
-        mouthColor = [90,120,100,235];
-        disgustGreen = [117, 193, 87, 110+70*inten];
-      } else if(expr === 'surprised') {
-        eyeOpen = 2.02 + 0.32*inten;
-        browLift = 44*inten;
-        mouthYmod = -22*inten; mouthOpen = 38*inten;
-        whiskerSpread = 1.18 + 0.13*inten;
-        eyeIrisW = 32;
-        eyeIrisH = 62;
-        birdColor = [255, 180, 230];
-        mouthColor = [135,90,120,225];
-      } else if(expr === 'fearful') {
-        eyeOpen = 1.40 + 0.21*inten;
-        browLift = 21*inten; browSad = 16*inten;
-        mouthYmod = 15*inten; mouthOpen = 23*inten;
-        whiskerSpread = 1.01 - 0.03*inten;
-        noseCol = [190, 180, 180];
-        birdColor = [210, 210, 250];
-        mouthColor = [80,80,120,225];
-      } else { // neutral
-        eyeOpen = 1.06;
-        whiskerSpread = 1.09;
-      }
-
-      // Fons i forma base
+      // Fons pictòric, galtes i taques emocionals
       noStroke();
       fill(...PALETTE.base, 239);
       rectMode(CENTER); rect(0,0,s,s,68);
       fill(...PALETTE.orange,47); rect(-s/4,0,s/2, s*0.7, 60);
       fill(...PALETTE.ochre,28); rect(s/4,s/6,s*0.38, s*0.43, 30);
-
-      // Taca verda "de nàusea" per disgusted
-      if(expr === 'disgusted' && inten > 0.15) {
-        fill(...disgustGreen);
+      if(expr === 'happy' && inten > 0.25) {
+        fill(255,80,90,80+140*inten);
+        ellipse(-195,120,92,44); ellipse(195,120,92,44);
+      }
+      if(expr === 'angry' && inten > 0.2) {
+        fill(255,70,60,90+120*inten);
+        ellipse(-195,120,90,45); ellipse(195,120,90,45);
+      }
+      if(expr === 'disgusted' && inten > 0.1) {
+        fill(...PALETTE.disgustGreen, 130+100*inten);
         beginShape();
-        vertex(-110, 160); bezierVertex(-160, 210, 0, 270+15*inten, 110, 160);
+        vertex(-110, 160); bezierVertex(-160, 210, 0, 270+22*inten, 110, 160);
         bezierVertex(120, 200, -90, 230, -110, 160);
         endShape(CLOSE);
       }
 
-      if(faceRedness>1) {
-        fill(255,70,60,faceRedness+40);
-        ellipse(-195,120,90,45); ellipse(195,120,90,45);
-      }
-
-      // Ulls realistes (inclou angry, sad amb llàgrimes i disgusted semicerrats)
+      // === ULLS EXPRESSIUS SEGONS EMOCIÓ ===
       push();
       for(let i=-1;i<=1;i+=2) {
         push();
         translate(i*180, eyeY);
-        rotate(i*eyeTilt);
-
-        // ULLS SEMICERRATS (disgusted)
-        if(expr==="disgusted") {
-          fill(...PALETTE.eyeWhite, 170+40*inten);
-          stroke(130,180,120,110+100*inten); strokeWeight(7+5*inten);
-        } else {
+        // Happy
+        if (expr === "happy") {
+          // <! Ulls semiclosos, brillants, ceja arquejada pictòrica
+          fill(...PALETTE.eyeWhite, 250);
+          stroke(120,90,50,60); strokeWeight(4);
+          arc(0, 0, 110, 50, PI*0.2, PI*0.8); // semiclosos
+          fill(98, 180, 94, 200);
+          ellipse(0, 0, 24, 18); 
+          fill(40,80,40,185);
+          ellipse(0,0, 9, 13);
+          fill(255,255,255,140);
+          ellipse(-8,-8, 7,7);
+          // <! Celles arquejades
+          noFill(); stroke(180,80,45,95); strokeWeight(12);
+          arc(0, -28, 60, 24, PI*0.16, PI*0.84);
+        }
+        // Sad
+        else if (expr === "sad") {
+          // <! Ulls normals, llàgrima
           fill(...PALETTE.eyeWhite, 240);
           stroke(120,90,50,45); strokeWeight(3);
+          ellipse(0,0, 90, 38);
+          fill(40, 80, 40, 180);
+          ellipse(0, 0, 22, 29);
+          fill(20,70,20,180);
+          ellipse(0,0, 8, 19);
+          // <! Llàgrima pictòrica gran i lluent
+          noStroke(); fill(...PALETTE.tearBlue, 175+80*inten);
+          ellipse(0, 32, 15, 36+22*inten);
+          fill(255,255,255,80); ellipse(0, 39, 7, 10);
+          // <! Celles caigudes
+          stroke(110,70,44,90); strokeWeight(10);
+          arc(0, -28, 68, 16, PI*1.11, PI*1.9);
         }
-        beginShape();
-        for(let a=PI*0.18;a<PI*0.82;a+=0.05){
-          let ex = cos(a)*eyeW/2, ey = sin(a)*eyeH/2*eyeOpen;
-          vertex(ex,ey);
+        // Angry
+        else if (expr === "angry") {
+          // <! Ulls enfadats: estirats i inclinats, NO corbats ni arquejats
+          rotate(-0.22 * Math.PI); // inclinació recta
+          fill(...PALETTE.eyeWhite, 220);
+          stroke(90,30,10,150); strokeWeight(10);
+          ellipse(0,0, 82, 26+4*inten); // elipse horitzontal, NO curvada
+          fill(40, 80, 40, 170);
+          ellipse(0, 0, 15, 14); // iris
+          fill(20,70,20,190);
+          ellipse(0,0, 6, 10);   // pupila petita i vertical
+          // <! Celles baixes i rectes
+          noFill(); stroke(90,30,10,180); strokeWeight(15);
+          line(-30,-32,30,-18);
         }
-        for(let a=PI*0.82;a>PI*0.18;a-=0.05){
-          let ex = cos(a)*eyeW/2, ey = -sin(a)*eyeH/2*eyeOpen;
-          vertex(ex,ey);
+        // Disgusted
+        else if (expr === "disgusted") {
+          // <! Ulls semicerrats, arquejats
+          rotate(0.13 * Math.PI * inten);
+          fill(...PALETTE.eyeWhite, 210);
+          stroke(130,180,120,100); strokeWeight(8);
+          ellipse(0,0, 67, 24+6*inten);
+          fill(108, 174, 90, 170);
+          ellipse(0, 0, 15, 10+2*inten);
+          fill(40,80,40,130);
+          ellipse(0,0, 6, 7+inten);
+          // <! Celles arquejades i irregulars
+          noFill(); stroke(90,120,50,110); strokeWeight(13);
+          arc(0, -28, 62, 15, PI*0.7, PI*1.2+0.5*inten);
         }
-        endShape(CLOSE);
-
-        // Iris
-        fill(...eyeIrisColor, 194);
-        ellipse(0, 0, eyeIrisW, eyeIrisH*eyeOpen);
-        fill(40, 80, 40, 180);
-        ellipse(0, 0, eyeIrisW*0.45, eyeIrisH*eyeOpen*0.45);
-
-        // Pupila més petita si angry/surprised
-        let pupilH = (expr==="angry" ? eyeIrisH*eyeOpen*0.22 :
-                      expr==="surprised" ? eyeIrisH*eyeOpen*0.44 :
-                      eyeIrisH*eyeOpen*0.6);
-        fill(20,70,20,210);
-        ellipse(0,0, eyeIrisW*0.13, pupilH);
-
-        // Reflexe
-        fill(255,255,255,100);
-        ellipse(-8,-eyeH/6.3, eyeIrisW*0.18, eyeIrisW*0.13);
-
-        // Ulls molt estrets per angry
-        if(expr==="angry" && inten>0.15) {
-          noFill(); stroke(70,30,10,180); strokeWeight(16+13*inten);
-          arc(0,0,eyeW*0.98,eyeH*eyeOpen*1.1,-PI*0.96,-PI*0.04);
+        // Surprised o Fearful
+        else if (expr === "surprised" || expr === "fearful") {
+          // <! Ulls rodons, pupil·la petita
+          fill(...PALETTE.eyeWhite, 255);
+          stroke(120,90,50,60); strokeWeight(4);
+          ellipse(0,0, 120, 58);
+          fill(78, 143, 94, 200);
+          ellipse(0, 0, 21, 27); 
+          fill(40,80,40,200);
+          ellipse(0,0, 8, 13);
+          fill(255,255,255,70);
+          ellipse(-6,-12, 8,7);
+          // <! Celles pujades (fearful)
+          if(expr === "fearful") {
+            noFill(); stroke(80,70,44,110); strokeWeight(12);
+            arc(0, -39, 68, 18, PI*0.03, PI*0.99);
+          }
         }
-        // Llàgrimes per sad
-        if(expr==="sad" && inten>0.25) {
-          noStroke();
-          fill(120,170,255,140+100*inten);
-          ellipse(-12, eyeH*eyeOpen*0.3, 13, 37+38*inten);
-          ellipse(12, eyeH*eyeOpen*0.3, 13, 37+38*inten);
+        // Neutral
+        else {
+          fill(...PALETTE.eyeWhite, 240);
+          stroke(120,90,50,45); strokeWeight(3);
+          ellipse(0,0, 100, 48);
+          fill(40, 80, 40, 180);
+          ellipse(0, 0, 26, 32); 
+          fill(20,70,20,180);
+          ellipse(0,0, 8, 18);
         }
         pop();
       }
       pop();
 
-      // Celles realistes (disgusted: arquejades)
-      stroke(80,50,30,90); strokeWeight(17);
-      if(expr==="angry") {
-        line(-153, eyeY-62+browLift+browAngry, -32, eyeY-35+browLift-browAngry);
-        line(153, eyeY-62+browLift+browAngry, 32, eyeY-35+browLift-browAngry);
-      } else if(expr==="disgusted") {
-        // celles molt arquejades cap amunt
-        line(-153, eyeY-82-browDisgust, -92, eyeY-57-2*browDisgust);
-        line(153, eyeY-82-browDisgust, 92, eyeY-57-2*browDisgust);
-      } else if(expr==="surprised" || expr==="fearful") {
-        line(-153, eyeY-95+browLift, -32, eyeY-100+browLift);
-        line(153, eyeY-95+browLift, 32, eyeY-100+browLift);
-      } else if(expr==="sad") {
-        line(-153, eyeY-60-browSad, -32, eyeY-85+browSad/1.7);
-        line(153, eyeY-60-browSad, 32, eyeY-85+browSad/1.7);
-      } else {
-        line(-153, eyeY-62+browLift, -32, eyeY-45+browTilt+browLift);
-        line(153, eyeY-62+browLift, 32, eyeY-45-browTilt+browLift);
-      }
-
-      // Nas realista (disgusted: més arrugat)
+      // <! Nas pictòric (disgusted: arrugat i verdós)
+      if(expr === 'disgusted') noseCol = [151,200,100];
       fill(...noseCol, 230);
       stroke(200,60,70,80);
-      strokeWeight(expr === 'disgusted' ? 12 : 6);
+      strokeWeight(expr === 'disgusted' ? 13 : 7);
       beginShape();
         vertex(-noseW/2, noseY);
         if(expr === 'disgusted') {
           // nas arrugat
-          bezierVertex(-7, noseY+noseH/3, 7, noseY+noseH/3-7*inten, noseW/2, noseY-7*inten);
+          bezierVertex(-7, noseY+noseH/3, 7, noseY+noseH/3-9*inten, noseW/2, noseY-8*inten);
         } else {
           bezierVertex(-6, noseY+noseH/2, 6, noseY+noseH/2, noseW/2, noseY);
         }
         vertex(0, noseY-8);
       endShape(CLOSE);
 
-      // Boca realista i exclusiva per cada emoció
+      // === BOCA SEGONS EMOCIÓ ===
       noFill();
       stroke(...mouthColor);
       strokeWeight(9);
       beginShape();
-      vertex(-44, noseY+32+mouthYmod);
-      if (expr === 'happy') {
-        bezierVertex(-18, noseY+64, 18, noseY+64+mouthOpen, 44, noseY+32);
-        bezierVertex(12, noseY+75+mouthOpen, -12, noseY+75+mouthOpen, -44, noseY+32);
-      } else if (expr === 'angry') {
-        line(-44, noseY+36+mouthYmod, 44, noseY+36+mouthYmod);
-      } else if (expr === 'surprised') {
-        let mx = 0, my = noseY+116+mouthOpen*1.1;
-        fill(255, 240, 240, 160);
-        ellipse(mx, my, 66+90*inten, 45+65*inten);
+      if (expr === "happy") {
+        // <! Boca feliç: super ampla, corba amunt, "dents" pictòriques.
+        vertex(-44, noseY+38);
+        bezierVertex(-18, noseY+88, 18, noseY+88, 44, noseY+38);
+        // Dents
+        fill(255,230,230,90);
+        arc(0, noseY+62, 62,22,0,PI);
         noFill();
-      } else if (expr === 'sad') {
-        bezierVertex(-19, noseY+89, 19, noseY+89+mouthOpen, 44, noseY+32);
-      } else if (expr === 'disgusted') {
-        // Boca asimètrica i torçada (fatigat, fàstic)
-        bezierVertex(-25, noseY+60, 30, noseY+76+mouthOpen, 44, noseY+32);
+      } else if (expr === "sad") {
+        // <! Boca trista: ben corba avall, llavis caiguts.
+        vertex(-44, noseY+84);
+        bezierVertex(-18, noseY+63, 18, noseY+63, 44, noseY+84);
+      } else if (expr === "angry") {
+        // <! Boca enfadada: recta o lleu inclinació avall.
+        vertex(-44, noseY+60);
+        vertex(44, noseY+54);
+      } else if (expr === "disgusted") {
+        // <! Boca de fàstic: asimètrica, taca verda.
+        vertex(-44, noseY+70);
+        bezierVertex(-22, noseY+88, 22, noseY+76, 44, noseY+60);
         // taca verda sota la boca (nàusea)
         noStroke();
         fill(117, 193, 87, 60+170*inten);
         ellipse(0, noseY+120+30*inten, 160+90*inten, 40+30*inten);
         noFill();
-      } else if (expr === 'fearful') {
-        bezierVertex(-15, noseY+110, 15, noseY+110+mouthOpen, 44, noseY+32);
-        let mx = 0, my = noseY+115+mouthOpen*1.1;
-        fill(250, 246, 250, 120);
-        ellipse(mx, my, 40+80*inten, 22+48*inten);
+      } else if (expr === "surprised") {
+        // <! Boca sorpresa: O
+        let mx = 0, my = noseY+110;
+        fill(255, 240, 240, 170);
+        ellipse(mx, my, 78, 58);
         noFill();
+      } else if (expr === "fearful") {
+        // <! Boca por: oberta i tremolosa (lleu zigzag)
+        vertex(-44, noseY+92);
+        bezierVertex(-25, noseY+112, -8, noseY+95, 0, noseY+112);
+        bezierVertex(8, noseY+125, 25, noseY+98, 44, noseY+95);
       } else {
-        // Neutral: línia completament recta
-        line(-44, noseY+52, 44, noseY+52);
+        // <! Boca neutral: línia recta horitzontal.
+        vertex(-44, noseY+70);
+        vertex(44, noseY+70);
       }
       endShape();
 
-      // Bigotis realistes
-      stroke(...PALETTE.whisker, 120); strokeWeight(5);
+      // <! Bigotis pictòrics
+      stroke(...PALETTE.whisker, 130); strokeWeight(5);
       for(let i=-1;i<=1;i+=2) {
         let wx = i*70, wy = noseY+36;
         for(let k=0;k<3;++k) {
@@ -402,10 +367,11 @@
       }
     }
 
+    // <! HUD i previsualització vídeo
     function drawHUD() {
       const traduccions = {
-        happy: "😃 Feliç",
-        sad: "😢 Trist",
+        happy: "😄 Feliç",
+        sad: "😭 Trist",
         angry: "😡 Enfadat",
         surprised: "😲 Sorprès",
         disgusted: "🤢 Fastiguejat",
@@ -415,13 +381,13 @@
       const emoticon = traduccions[currentExpression.dominant] || "😐 Neutral";
       noStroke();
       fill(50, 150, 255);
-      textSize(map(width, 500, 1200, 16, 24));
+      textSize(map(width, 500, 1200, 19, 29));
       textAlign(CENTER, TOP);
       text(`${emoticon} (${floor(smoothIntensity * 100)}%)`, width / 2, 20);
     }
 
     function drawVideoPreview() {
-      const previewSize = min(width, height) * 0.15;
+      const previewSize = min(width, height) * 0.13;
       image(
         video,
         width - previewSize - 10,
@@ -431,6 +397,7 @@
       );
     }
 
+    // <! Favicon per evitar error 404
     let link = document.createElement('link');
     link.rel = 'icon';
     link.type = 'image/png';
