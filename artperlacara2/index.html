@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ca">
 <!--
-  Gat Expressiu Klee - Boca abierta (O) en sorpresa, vómito pictórico mejorado en "disgusted"
-  y ojos que cambian según la expresión/emoción.
+  Gat Expressiu Klee - Asco (disgusted) mejorado:
+  El vómito es más fluido, curvado y natural, con gotas y charco.
+  Totalmente integrado en la versión animada ML5.js con emociones.
 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gat Expressiu Klee - Ojos según expresión</title>
+  <title>Gat Expressiu Klee - Asco mejorado</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
   <style>
@@ -301,27 +302,46 @@
         stroke(...PALETTE.mouth, 180); strokeWeight(11); noFill();
         line(-mouthW/2, mouthY, mouthW/2, mouthY);
 
-        // Vómito pictórico mejorado
+        // Vómito pictórico MEJORADO: curvas, gotas y charco
         let vomY = mouthY+15;
+        let vomLen = 100 + 40*inten;
+        let vomSide = 62 + 22*inten;
+
         // Chorro central
-        noStroke();
-        fill(...PALETTE.vomit, 220);
-        rect(-14, vomY, 28, 63, 10);
-        // Gotitas y charco
-        fill(...PALETTE.vomit, 180);
+        noFill();
+        stroke(90, 220, 110, 170);
+        strokeWeight(20);
         beginShape();
-          vertex(-34, vomY+24);
-          bezierVertex(-48, vomY+80, 48, vomY+102, 34, vomY+24);
-          bezierVertex(25, vomY+66, -25, vomY+112, -34, vomY+24);
-        endShape(CLOSE);
-        // Gotas sueltas
-        fill(170,255,120,170);
-        ellipse(-20, vomY+95, 19, 12);
-        ellipse(0, vomY+110, 25, 18);
-        ellipse(20, vomY+97, 17, 10);
-        // Sombra/charco base
-        fill(150,255,150,110);
-        ellipse(0, vomY+120, 45, 17);
+          vertex(0, vomY);
+          bezierVertex(-10, vomY+vomLen*0.38, 10, vomY+vomLen*0.62, 0, vomY+vomLen);
+        endShape();
+
+        // Curvas laterales
+        stroke(120,255,160,120); strokeWeight(9);
+        beginShape();
+          vertex(-14, vomY+12);
+          bezierVertex(-vomSide, vomY+vomLen*0.32, -18, vomY+vomLen*0.7, -5, vomY+vomLen+10);
+        endShape();
+        beginShape();
+          vertex(14, vomY+12);
+          bezierVertex(vomSide, vomY+vomLen*0.32, 18, vomY+vomLen*0.7, 5, vomY+vomLen+10);
+        endShape();
+
+        // Gotas principales
+        noStroke();
+        fill(170,255,120,180);
+        ellipse(-18, vomY+vomLen+12, 20, 10);
+        ellipse(0, vomY+vomLen+19, 28, 14);
+        ellipse(18, vomY+vomLen+12, 18, 9);
+
+        // Gotitas arriba
+        fill(170,255,120,110);
+        ellipse(-9, vomY+vomLen*0.71, 9, 5);
+        ellipse(9, vomY+vomLen*0.76, 9, 5);
+
+        // Charco base
+        fill(150,255,150,130);
+        ellipse(0, vomY+vomLen+28, 45, 15);
       } else {
         // Neutral
         stroke(...PALETTE.mouth, 145); strokeWeight(9); noFill();
