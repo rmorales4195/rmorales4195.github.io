@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ca">
 <!--
-  Gat Expressiu Klee - Boca línea en sorpresa, fiel a tu referencia visual.
+  Gat Expressiu Klee - Boca abierta (O) en sorpresa y vómito pictórico mejorado en "disgusted".
 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gat Expressiu Klee - Boca línea sorpresa</title>
+  <title>Gat Expressiu Klee - Boca abierta y vómito pictórico</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
   <style>
@@ -163,7 +163,7 @@
       drawVideoPreview();
     }
 
-    // Dibuix fidel a Klee, amb boca línea en sorpresa
+    // Dibuix fidel a Klee, boca O en sorpresa y vómito pictórico mejorado
     function drawKleeCatFace(expr, inten) {
       let s = 800;
       // -- Fons pictòric --
@@ -239,9 +239,14 @@
           bezierVertex(-mouthW/3, mouthY-8, mouthW/3, mouthY-8, mouthW/2, mouthY+32);
         endShape();
       } else if(expr === "surprised") {
-        // Línea simple, horizontal, tipo "sorprendido" de referencia
-        stroke(...PALETTE.mouth, 180); strokeWeight(13); noFill();
-        line(-mouthW*0.27, mouthY+33, mouthW*0.27, mouthY+33);
+        // Boca abierta tipo O
+        stroke(...PALETTE.mouth, 200);
+        fill(255, 240, 240, 170);
+        ellipse(0, mouthY+33, 54, 80);
+        // Sombra interior
+        noFill();
+        stroke(190, 80, 80, 60);
+        ellipse(0, mouthY+33, 36, 54);
       } else if(expr === "angry") {
         stroke(...PALETTE.mouth, 180); strokeWeight(12); noFill();
         beginShape();
@@ -250,11 +255,31 @@
           vertex(mouthW/2, mouthY);
         endShape();
       } else if(expr === "disgusted") {
+        // Boca recta
         stroke(...PALETTE.mouth, 180); strokeWeight(11); noFill();
+        line(-mouthW/2, mouthY, mouthW/2, mouthY);
+
+        // Vómito pictórico mejorado
+        let vomY = mouthY+15;
+        // Chorro central
+        noStroke();
+        fill(...PALETTE.vomit, 220);
+        rect(-14, vomY, 28, 63, 10);
+        // Gotitas y charco
+        fill(...PALETTE.vomit, 180);
         beginShape();
-          vertex(-mouthW/2, mouthY);
-          bezierVertex(-mouthW/3, mouthY+18, mouthW/3, mouthY+38, mouthW/2, mouthY+12);
-        endShape();
+          vertex(-34, vomY+24);
+          bezierVertex(-48, vomY+80, 48, vomY+102, 34, vomY+24);
+          bezierVertex(25, vomY+66, -25, vomY+112, -34, vomY+24);
+        endShape(CLOSE);
+        // Gotas sueltas
+        fill(170,255,120,170);
+        ellipse(-20, vomY+95, 19, 12);
+        ellipse(0, vomY+110, 25, 18);
+        ellipse(20, vomY+97, 17, 10);
+        // Sombra/charco base
+        fill(150,255,150,110);
+        ellipse(0, vomY+120, 45, 17);
       } else {
         // Neutral
         stroke(...PALETTE.mouth, 145); strokeWeight(9); noFill();
@@ -262,18 +287,6 @@
           vertex(-mouthW/2, mouthY);
           vertex(mouthW/2, mouthY);
         endShape();
-      }
-
-      // -- VÓMIT pictòric en asco --
-      if(expr === "disgusted" && inten > 0.18) {
-        fill(...PALETTE.vomit, 140+100*inten);
-        noStroke();
-        beginShape();
-          vertex(-40, mouthY+55);
-          bezierVertex(-60, mouthY+105+90*inten, 60, mouthY+165+100*inten, 40, mouthY+55);
-        endShape(CLOSE);
-        fill(170,255,120,120+100*inten);
-        ellipse(0, mouthY+135+80*inten, 65+60*inten, 28+40*inten);
       }
 
       // -- Coloretes "happy" --
