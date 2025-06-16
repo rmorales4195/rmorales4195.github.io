@@ -30,23 +30,7 @@
         let caraRadio = 320 + temblar;
         ellipse(cx, cy, caraRadio, caraRadio);
 
-        // GORRA GRANDE A LA IZQUIERDA Y SOBRE LA CABEZA
-        push();
-        let gorraW = 250;
-        let gorraH = 100;
-        let gorraX = cx - caraRadio * 0.38; // Más a la izquierda respecto a la cabeza
-        let gorraY = cy - caraRadio * 0.51; // Encima de la cabeza
-        // Cuerpo de la gorra
-        fill(220, 40, 60);
-        arc(gorraX, gorraY, gorraW, gorraH, PI + QUARTER_PI * 0.4, TWO_PI - QUARTER_PI * 0.7, CHORD);
-        // Visera (ligeramente inclinada)
-        fill(140, 20, 36);
-        arc(gorraX - gorraW * 0.31, gorraY + gorraH * 0.06, gorraW * 0.8, gorraH * 0.36, PI + QUARTER_PI * 0.6, TWO_PI - QUARTER_PI * 0.4, OPEN);
-        // Botón
-        fill(80, 0, 0);
-        ellipse(gorraX + gorraW * 0.12, gorraY - gorraH * 0.38, 28, 15);
-        pop();
-
+        
         // OJOS
         let eyeY = cy - 40;
         let eyeDX = 60 + h * 0.05;
