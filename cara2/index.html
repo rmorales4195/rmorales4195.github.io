@@ -22,64 +22,69 @@
 
         background(0, 255 - h, 155);
 
-        // Cara circular tipo simpática
+        // Cara
         fill(247, 220, 180);
         noStroke();
-        ellipse(windowWidth / 2, windowHeight / 2, 320 + temblar, 320 + temblar);
+        let cx = windowWidth / 2;
+        let cy = windowHeight / 2;
+        let caraRadio = 320 + temblar;
+        ellipse(cx, cy, caraRadio, caraRadio);
 
-        // GORRA cartoon LADO IZQUIERDO (mejorada y más natural)
+        // GORRA GRANDE A LA IZQUIERDA Y SOBRE LA CABEZA
         push();
-        let gorraBaseX = windowWidth / 2 - 70;
-        let gorraBaseY = windowHeight / 2 - 170;
-        // Parte principal gorra
+        let gorraW = 250;
+        let gorraH = 100;
+        let gorraX = cx - caraRadio * 0.38; // Más a la izquierda respecto a la cabeza
+        let gorraY = cy - caraRadio * 0.51; // Encima de la cabeza
+        // Cuerpo de la gorra
         fill(220, 40, 60);
-        arc(gorraBaseX, gorraBaseY, 160, 80, PI, 0, CHORD);
-        // Visera
+        arc(gorraX, gorraY, gorraW, gorraH, PI + QUARTER_PI * 0.4, TWO_PI - QUARTER_PI * 0.7, CHORD);
+        // Visera (ligeramente inclinada)
         fill(140, 20, 36);
-        arc(gorraBaseX - 60, gorraBaseY + 15, 90, 32, PI + QUARTER_PI / 2, TWO_PI, OPEN);
+        arc(gorraX - gorraW * 0.31, gorraY + gorraH * 0.06, gorraW * 0.8, gorraH * 0.36, PI + QUARTER_PI * 0.6, TWO_PI - QUARTER_PI * 0.4, OPEN);
         // Botón
         fill(80, 0, 0);
-        ellipse(gorraBaseX, gorraBaseY - 38, 24, 12);
+        ellipse(gorraX + gorraW * 0.12, gorraY - gorraH * 0.38, 28, 15);
         pop();
 
         // OJOS
-        let eyeY = windowHeight / 2 - 40;
+        let eyeY = cy - 40;
         let eyeDX = 60 + h * 0.05;
         fill(255);
-        ellipse(windowWidth / 2 - eyeDX, eyeY, 54, 38);
-        ellipse(windowWidth / 2 + eyeDX, eyeY, 54, 38);
+        ellipse(cx - eyeDX, eyeY, 54, 38);
+        ellipse(cx + eyeDX, eyeY, 54, 38);
         // Pupilas
         fill(40, 70, 120);
-        ellipse(windowWidth / 2 - eyeDX, eyeY, 18, 22 + h * 0.05);
-        ellipse(windowWidth / 2 + eyeDX, eyeY, 18, 22 + h * 0.05);
+        ellipse(cx - eyeDX, eyeY, 18, 22 + h * 0.05);
+        ellipse(cx + eyeDX, eyeY, 18, 22 + h * 0.05);
 
         // CEJAS ARQUEADAS
         stroke(70, 40, 10);
         strokeWeight(7);
         noFill();
         // Izquierda
-        arc(windowWidth / 2 - eyeDX, eyeY - 28, 50, 22, PI + QUARTER_PI / 2, TWO_PI - QUARTER_PI / 2);
+        arc(cx - eyeDX, eyeY - 28, 50, 22, PI + QUARTER_PI / 2, TWO_PI - QUARTER_PI / 2);
         // Derecha
-        arc(windowWidth / 2 + eyeDX, eyeY - 28, 50, 22, PI + QUARTER_PI / 2, TWO_PI - QUARTER_PI / 2);
+        arc(cx + eyeDX, eyeY - 28, 50, 22, PI + QUARTER_PI / 2, TWO_PI - QUARTER_PI / 2);
 
         // NARIZ simpática (ovalada)
         noStroke();
         fill(255, 180, 120);
-        ellipse(windowWidth / 2, windowHeight / 2 + 16, 30, 18);
+        ellipse(cx, cy + 16, 30, 18);
 
         // BOCA animada y expresiva
         stroke(180, 40, 50);
         strokeWeight(6);
         noFill();
-        let mouthY = windowHeight / 2 + 70;
+        let mouthY = cy + 70;
         let smile = map(vol, 0, 1, 6, 50);
-        arc(windowWidth / 2, mouthY, 90, 40 + smile, 0, PI, CHORD);
+        arc(cx, mouthY, 90, 40 + smile, 0, PI, CHORD);
 
         // Mejillas
         noStroke();
         fill(255, 150, 160, 90 + smile);
-        ellipse(windowWidth / 2 - 54, windowHeight / 2 + 44, 28, 17);
-        ellipse(windowWidth / 2 + 54, windowHeight / 2 + 44, 28, 17);
+        ellipse(cx - 54, cy + 44, 28, 17);
+        ellipse(cx + 54, cy + 44, 28, 17);
       }
     </script>
   </body>
