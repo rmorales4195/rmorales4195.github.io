@@ -22,97 +22,64 @@
 
         background(0, 255 - h, 155);
 
-        // Cara
-        fill(217, 190 + h, 150);
-        ellipse(windowWidth / 2, windowHeight / 2, 300 + temblar, 300 + temblar);
+        // Cara circular tipo simpática
+        fill(247, 220, 180);
+        noStroke();
+        ellipse(windowWidth / 2, windowHeight / 2, 320 + temblar, 320 + temblar);
 
-        // Orejas (más felinas)
+        // GORRA cartoon LADO IZQUIERDO (mejorada y más natural)
         push();
-        fill(217, 190 + h, 150);
-        stroke(150, 100, 70, 100);
-        strokeWeight(2);
-        // Oreja izquierda
-        triangle(
-          windowWidth / 2 - 110, windowHeight / 2 - 100,
-          windowWidth / 2 - 170, windowHeight / 2 - 220,
-          windowWidth / 2 - 40, windowHeight / 2 - 130
-        );
-        // Oreja derecha
-        triangle(
-          windowWidth / 2 + 110, windowHeight / 2 - 100,
-          windowWidth / 2 + 170, windowHeight / 2 - 220,
-          windowWidth / 2 + 40, windowHeight / 2 - 130
-        );
+        let gorraBaseX = windowWidth / 2 - 70;
+        let gorraBaseY = windowHeight / 2 - 170;
+        // Parte principal gorra
+        fill(220, 40, 60);
+        arc(gorraBaseX, gorraBaseY, 160, 80, PI, 0, CHORD);
+        // Visera
+        fill(140, 20, 36);
+        arc(gorraBaseX - 60, gorraBaseY + 15, 90, 32, PI + QUARTER_PI / 2, TWO_PI, OPEN);
+        // Botón
+        fill(80, 0, 0);
+        ellipse(gorraBaseX, gorraBaseY - 38, 24, 12);
         pop();
 
-        // Gorra hacia el lado izquierdo (roja)
-        push();
-        let gorraX = windowWidth / 2 - 60;
-        let gorraY = windowHeight / 2 - 140;
-        fill(200, 30, 50);
-        arc(gorraX, gorraY, 110, 60, PI, 0, CHORD);
-        fill(80, 0, 20);
-        arc(gorraX - 28, gorraY + 2, 42, 25, 0, PI, OPEN);
-        pop();
+        // OJOS
+        let eyeY = windowHeight / 2 - 40;
+        let eyeDX = 60 + h * 0.05;
+        fill(255);
+        ellipse(windowWidth / 2 - eyeDX, eyeY, 54, 38);
+        ellipse(windowWidth / 2 + eyeDX, eyeY, 54, 38);
+        // Pupilas
+        fill(40, 70, 120);
+        ellipse(windowWidth / 2 - eyeDX, eyeY, 18, 22 + h * 0.05);
+        ellipse(windowWidth / 2 + eyeDX, eyeY, 18, 22 + h * 0.05);
 
-        // Ojos (más tipo gato)
-        fill(255 + h / 2, 255, 255);
-        ellipse(windowWidth / 2 - 60 + h * 2, windowHeight / 2 - 30 + h * 2, 55, 35);
-        ellipse(windowWidth / 2 + 60 + h * 2, windowHeight / 2 - 30 + h * 2, 55, 35);
+        // CEJAS ARQUEADAS
+        stroke(70, 40, 10);
+        strokeWeight(7);
+        noFill();
+        // Izquierda
+        arc(windowWidth / 2 - eyeDX, eyeY - 28, 50, 22, PI + QUARTER_PI / 2, TWO_PI - QUARTER_PI / 2);
+        // Derecha
+        arc(windowWidth / 2 + eyeDX, eyeY - 28, 50, 22, PI + QUARTER_PI / 2, TWO_PI - QUARTER_PI / 2);
 
-        // Pupilas verticales
-        fill(30, 180, 90);
-        ellipse(windowWidth / 2 - 60 + h * 2, windowHeight / 2 - 30 + h * 2, 12, 32);
-        ellipse(windowWidth / 2 + 60 + h * 2, windowHeight / 2 - 30 + h * 2, 12, 32);
+        // NARIZ simpática (ovalada)
+        noStroke();
+        fill(255, 180, 120);
+        ellipse(windowWidth / 2, windowHeight / 2 + 16, 30, 18);
 
-        // Cejas: más felinas y expresivas
-        stroke(50, 30, 0);
+        // BOCA animada y expresiva
+        stroke(180, 40, 50);
         strokeWeight(6);
         noFill();
-        // Ceja izquierda (arqueada tipo gato)
-        beginShape();
-        curveVertex(windowWidth / 2 - 100, windowHeight / 2 - 75);
-        curveVertex(windowWidth / 2 - 80, windowHeight / 2 - 90 - h * 0.03);
-        curveVertex(windowWidth / 2 - 45, windowHeight / 2 - 80 - h * 0.02);
-        endShape();
-        // Ceja derecha (arqueada tipo gato)
-        beginShape();
-        curveVertex(windowWidth / 2 + 100, windowHeight / 2 - 75);
-        curveVertex(windowWidth / 2 + 80, windowHeight / 2 - 90 - h * 0.03);
-        curveVertex(windowWidth / 2 + 45, windowHeight / 2 - 80 - h * 0.02);
-        endShape();
+        let mouthY = windowHeight / 2 + 70;
+        let smile = map(vol, 0, 1, 6, 50);
+        arc(windowWidth / 2, mouthY, 90, 40 + smile, 0, PI, CHORD);
 
-        // Nariz de gato (triángulo rosado)
+        // Mejillas
         noStroke();
-        fill(255, 120, 180);
-        triangle(
-          windowWidth / 2 - 18, windowHeight / 2 + 20,
-          windowWidth / 2 + 18, windowHeight / 2 + 20,
-          windowWidth / 2, windowHeight / 2 + 45
-        );
-        // Línea nariz-boca
-        stroke(160, 80, 120);
-        strokeWeight(3);
-        line(windowWidth / 2, windowHeight / 2 + 45, windowWidth / 2, windowHeight / 2 + 80);
-
-        // Boca centrada y expresiva (gato)
-        noFill();
-        stroke(255, 50, 50);
-        strokeWeight(5);
-        arc(windowWidth / 2 - 13, windowHeight / 2 + 80, 30, 20 + h * 0.1, 0, PI, OPEN);
-        arc(windowWidth / 2 + 13, windowHeight / 2 + 80, 30, 20 + h * 0.1, 0, PI, OPEN);
-
-        // Bigotes
-        stroke(80, 60, 30, 180);
-        strokeWeight(3);
-        // Izquierda
-        line(windowWidth / 2 - 18, windowHeight / 2 + 32, windowWidth / 2 - 70, windowHeight / 2 + 25);
-        line(windowWidth / 2 - 18, windowHeight / 2 + 38, windowWidth / 2 - 75, windowHeight / 2 + 38);
-        line(windowWidth / 2 - 18, windowHeight / 2 + 44, windowWidth / 2 - 70, windowHeight / 2 + 54);
-        // Derecha
-        line(windowWidth / 2 + 18, windowHeight / 2 + 32, windowWidth / 2 + 70, windowHeight / 2 + 25);
-        line(windowWidth / 2 + 18, windowHeight / 2 + 38, windowWidth / 2 + 75, windowHeight / 2 + 38);
-        line(windowWidth / 2 + 18, windowHeight / 2 + 44, windowWidth / 2 + 70, windowHeight / 2 + 54);
+        fill(255, 150, 160, 90 + smile);
+        ellipse(windowWidth / 2 - 54, windowHeight / 2 + 44, 28, 17);
+        ellipse(windowWidth / 2 + 54, windowHeight / 2 + 44, 28, 17);
       }
     </script>
   </body>
